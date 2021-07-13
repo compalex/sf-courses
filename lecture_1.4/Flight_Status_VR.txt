@@ -1,0 +1,3 @@
+ISPICKVAL(Status__c, 'Past')
+ || 
+ Trip__r.Start_Date__c <  TODAY()

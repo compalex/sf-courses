@@ -1,0 +1,5 @@
+IF( NOT( ISBLANK( Birthdate__c ) ) ,
+  IF( DATE( 2000 , MONTH(  Birthdate__c ) , DAY( Birthdate__c ) ) <= DATE( 2000 , MONTH( TODAY() ) , DAY( TODAY() ) ),
+     YEAR (Today()) - YEAR ( Birthdate__c ),
+     YEAR (Today()) - YEAR ( Birthdate__c ) - 1 ),
+  null)
