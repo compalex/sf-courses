@@ -1,0 +1,23 @@
+Integer max = 20;
+List<Integer> primes = new List<Integer>();
+
+for(Integer i = 1; i <= max; i++) {
+    if(isPrime(i)) {
+        primes.add(i);
+    }
+}
+
+System.debug(primes);
+
+boolean isPrime(Integer num) {
+    if(num < 2) {
+	return false;
+    } else if(num == 2) {
+	return true;
+    } else {
+        for(Integer i = 2; i < num; i++) {
+            if(math.mod(num, i) == 0) return false;
+    	}
+    }
+    return true;
+}

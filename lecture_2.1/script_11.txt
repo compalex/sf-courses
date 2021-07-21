@@ -1,0 +1,9 @@
+List<Integer> nums = new List<Integer>{1,2,4,5,7,11,12,14};
+List<Integer> indexes = new List<Integer>();
+
+for(Integer i = 0; i < nums.size(); i++) {
+    if(math.mod(nums.get(i), 2) == 0) {
+        indexes.add(i);
+    }
+}
+System.debug(indexes);

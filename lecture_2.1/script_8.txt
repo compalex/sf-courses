@@ -1,0 +1,13 @@
+List<Integer> ints = new List<Integer> {1,2,5,6,11,13,20};
+List<Integer> evens = new List<Integer>();
+List<Integer> odds = new List<Integer>();
+
+for(Integer i : ints) {
+    if(math.mod(i, 2) == 0) {
+	evens.add(i);
+    } else {
+	odds.add(i);
+    }
+}
+System.debug('Evens are: ' + evens);
+System.debug('Odds are: ' + odds);

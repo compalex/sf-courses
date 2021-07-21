@@ -1,0 +1,13 @@
+Integer max = 33;
+Integer i = 1; 
+Integer j = 2;
+Integer temp;
+List<Integer> fibos = new List<Integer> {i, j};
+
+while(i + j <= max) {
+    temp = i + j;
+    i = j;
+    j = temp;
+    fibos.add(j);
+}
+System.debug(fibos);

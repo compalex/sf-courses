@@ -1,0 +1,8 @@
+String line = 'Cats are smarter than dogs';
+List<String> words = line.split(' ');
+
+for(Integer i = 0; i < words.size(); i++) {
+    if(math.mod(i, 2) == 0) {
+        System.debug(words.get(i));
+    }
+}

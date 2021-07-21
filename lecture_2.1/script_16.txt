@@ -1,0 +1,5 @@
+Long numToCheck = 910019;
+String strToCheck = String.valueOf(numToCheck);
+String reversedStr = strToCheck.reverse();
+String msg = (strToCheck == reversedStr) ? 'a palindrome' : 'not a palindrome';
+System.debug(numToCheck + ' is ' + msg);

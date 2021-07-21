@@ -1,0 +1,13 @@
+String line = 'Cats are smarter than dogs';
+List<String> words = line.split(' ');
+Map<Integer, Integer> equalWords = new Map<Integer, Integer>();
+
+for(String word : words) {
+    Integer length = word.length();
+    if(equalWords.containsKey(length)) {
+        equalWords.put(length, equalWords.get(length) + 1);
+    } else {
+        equalWords.put(length, 1);
+    }
+}
+System.debug(equalWords);

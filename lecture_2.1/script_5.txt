@@ -1,0 +1,7 @@
+Integer sumUpTo = 7;
+Integer sum = 0;
+
+for(Integer i = 1; i <= sumUpTo; i++) {
+    sum += i;
+}
+System.debug(sum);
