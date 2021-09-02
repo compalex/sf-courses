@@ -11,12 +11,12 @@ System.debug(primes);
 
 boolean isPrime(Integer num) {
     if(num < 2) {
-	return false;
+		return false;
     } else if(num == 2) {
-	return true;
+		return true;
     } else {
         for(Integer i = 2; i < num; i++) {
-            if(math.mod(num, i) == 0) return false;
+            if(Math.mod(num, i) == 0) return false;
     	}
     }
     return true;
