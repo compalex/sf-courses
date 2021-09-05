@@ -27,13 +27,13 @@ public class TouristManager {
             return new List<Tourist__c>();
         }
         return [
-			SELECT Name, Age__c 
-            FROM Tourist__c 
-			WHERE Id IN (
-                SELECT Tourist__c 
-                FROM Flight__c 
-                WHERE Trip__r.Start_date__c >= :startDate
-            )
+		SELECT Name, Age__c 
+            	FROM Tourist__c 
+		WHERE Id IN (
+                	SELECT Tourist__c 
+                	FROM Flight__c 
+                	WHERE Trip__r.Start_date__c >= :startDate
+            	)
         ];
     }
     
