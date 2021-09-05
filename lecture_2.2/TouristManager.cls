@@ -4,7 +4,6 @@ public class TouristManager {
         if(String.isBlank(name)) {
             return new List<Tourist__c>();
         }
-        
         return [
             SELECT Name, Age__c 
             FROM Tourist__c 
@@ -16,7 +15,6 @@ public class TouristManager {
         if(ages == null || ages.isEmpty()) {
             return new List<Tourist__c>();
         }
-        
         return [
             SELECT Name, Age__c 
             FROM Tourist__c 
@@ -28,22 +26,33 @@ public class TouristManager {
         if(startDate == null) {
             return new List<Tourist__c>();
         }
-        
         return [
-			SELECT Name, Age__c FROM Tourist__c 
+			SELECT Name, Age__c 
+            FROM Tourist__c 
 			WHERE Id IN (
-				SELECT Tourist__c 
-				FROM Flight__c 
-				WHERE Trip__r.Start_date__c >= :startDate
-			)
+                SELECT Tourist__c 
+                FROM Flight__c 
+                WHERE Trip__r.Start_date__c >= :startDate
+            )
+        ];
+    }
+    
+    public static List<Tourist__c> getByLastName(List<String> lastNames) {
+        if(lastNames == null || lastNames.isEmpty()) {
+            return new List<Tourist__c>();
+        }
+        return [
+            SELECT LastName__c, Email__c
+            FROM Tourist__c
+            WHERE LastName__c IN :lastNames
         ];
     }
     
     public static List<Tourist__c> getWithRelatedTrips() {
         return [
             SELECT Name, 
-			       Age__c, 
-				  (SELECT Trip__r.Start_Date__c, Trip__r.Name FROM Flights__r) 
+            	   Age__c, 
+                   (SELECT Trip__r.Start_Date__c, Trip__r.Name FROM Flights__r) 
             FROM Tourist__c
         ];
     }

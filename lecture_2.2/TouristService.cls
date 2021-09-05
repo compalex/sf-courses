@@ -4,23 +4,24 @@ public class TouristService {
         if(newTourists == null || newTourists.isEmpty()) {
             return;
         }
-		Boolean areThereAnyDuplicates = false;
+        List<String> lastNames = new List<String>();
         
         for(Tourist__c newTourist : newTourists) {
-            Tourist__c existingTourist = [
-                SELECT id
-                FROM Tourist__c
-                WHERE LastName__c = :newTourist.LastName__c
-                AND Email__c = :newTourist.Email__c
-                LIMIT 1
-            ];
-            if(existingTourist != null) {
-				areThereAnyDuplicates = true;
-                newTourist.IsDuplicate__c = true;
+            lastNames.add(newTourist.LastName__c);
+        }
+        List<Tourist__c> oldTourists = TouristManager.getByLastName(lastNames);
+        List<Tourist__c> touristsToUpdate = new List<Tourist__c>();
+        
+        for(Tourist__c newTourist : newTourists) {
+            for(Tourist__c oldTourist : oldTourists) {
+                if(newTourist.LastName__c == oldTourist.LastName__c && newTourist.Email__c == oldTourist.Email__c) {
+                    newTourist.IsDuplicate__c = true;
+                    touristsToUpdate.add(newTourist);
+                }
             }
         }
-		if(areThereAnyDuplicates) {
-			update newTourists;
-		}
+        if(!touristsToUpdate.isEmpty()) {
+            update newTourists;
+        } 
     }
 }

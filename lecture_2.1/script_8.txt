@@ -3,7 +3,7 @@ List<Integer> evens = new List<Integer>();
 List<Integer> odds = new List<Integer>();
 
 for(Integer i : ints) {
-    if(math.mod(i, 2) == 0) {
+    if(Math.mod(i, 2) == 0) {
 	evens.add(i);
     } else {
 	odds.add(i);

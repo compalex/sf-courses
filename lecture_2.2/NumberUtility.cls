@@ -1,10 +1,10 @@
 public class NumberUtility {
 
     public static List<Integer> getPrimes(Integer max) {
-        List<Integer> primes = new List<Integer>();
         if(max == null) {
-            return primes;
+            return new List<Integer>();
         }
+        List<Integer> primes = new List<Integer>();
         
         for(Integer i = 1; i <= max; i++) {
             if(isPrime(i)) {
@@ -34,8 +34,10 @@ public class NumberUtility {
     }
     
     public static List<Integer> getFibos(Integer max) {
-        if(max == null) {
+        if(max == null || max == 0) {
             return new List<Integer>();
+        } else if(max == 1) {
+            return new List<Integer> {1};
         }
         Integer i = 1; 
         Integer j = 2;
@@ -55,8 +57,8 @@ public class NumberUtility {
         if(numToCheck == null) {
 			return false;            
         }
-        String strToCheck = String.valueOf(numToCheck);
+    	String strToCheck = String.valueOf(numToCheck);
 		String reversedStr = strToCheck.reverse();
-        return strToCheck == reversedStr;
+    	return strToCheck == reversedStr;
     }
 }
