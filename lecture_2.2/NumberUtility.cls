@@ -10,7 +10,7 @@ public class NumberUtility {
             if(isPrime(i)) {
                 primes.add(i);
             }
-		}
+	}
         return primes;
     }
     
@@ -55,10 +55,10 @@ public class NumberUtility {
     
     public static Boolean isPalindrome(Long numToCheck) {
         if(numToCheck == null) {
-			return false;            
+	    return false;            
         }
     	String strToCheck = String.valueOf(numToCheck);
-		String reversedStr = strToCheck.reverse();
+	String reversedStr = strToCheck.reverse();
     	return strToCheck == reversedStr;
     }
 }
