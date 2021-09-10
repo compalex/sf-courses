@@ -6,13 +6,19 @@ public with sharing class TouristTriggerHandler {
             return;
         }
         TouristService.markDuplicates(tourists);
-        FlightService.declineFlightsOfInactiveTourists(tourists);
     }
 
-    public static void onBeforeUpdate(List<Tourist__c> tourists) {
+    public static void onAfterUpdate(List<Tourist__c> tourists) {
         if(tourists == null || tourists.isEmpty()) {
             return;
         }
-        FlightService.declineFlightsOfInactiveTourists(tourists);
+        List<Tourist__c> inactiveTourists = new List<Tourist__c>();
+
+        for(Tourist__c tourist : tourists) {
+            if(!tourist.Active__c) {
+                inactiveTourists.add(tourist);
+            }
+        }
+        FlightService.declineFlights(inactiveTourists);
     }
 }

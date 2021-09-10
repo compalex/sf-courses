@@ -1,16 +1,16 @@
 public with sharing class FlightManager {
 
-    public static List<Flight__c> getById(Set<Id> flightIds) {
+    public static List<Flight__c> getByIds(Set<Id> flightIds) {
         if(flightIds == null || flightIds.isEmpty()) {
             return new List<Flight__c>();
         }
         return [
-                SELECT id,
+                SELECT Id,
                        Tourist__r.Age__c,
                        Trip__r.Minimum_Age__c,
                        Trip__r.Start_Date__c
                 FROM Flight__c
-                WHERE id IN :flightIds
+                WHERE Id IN :flightIds
         ];
     }
 

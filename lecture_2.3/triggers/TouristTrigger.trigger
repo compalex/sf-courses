@@ -7,7 +7,7 @@ trigger TouristTrigger on Tourist__c (before insert, before update) {
                 TouristTriggerHandler.onBeforeInsert(Trigger.new);
             }
             when BEFORE_UPDATE {
-                TouristTriggerHandler.onBeforeUpdate(Trigger.new);
+                TouristTriggerHandler.onAfterUpdate(Trigger.new);
             }
         }
     }

@@ -21,7 +21,7 @@ public class TouristService {
             }
         }
         if(!touristsToUpdate.isEmpty()) {
-            update newTourists;
+            update touristsToUpdate;
         } 
     }
 }

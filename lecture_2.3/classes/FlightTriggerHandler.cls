@@ -16,7 +16,7 @@ public with sharing class FlightTriggerHandler {
     }
 
     private static void validateRecords(Map<Id, Flight__c> newFlights) {
-        List<Flight__c> flightsWithParentFields = FlightManager.getById(newFlights.keySet());
+        List<Flight__c> flightsWithParentFields = FlightManager.getByIds(newFlights.keySet());
 
         for(Flight__c flightWithFields : flightsWithParentFields) {
             if(flightWithFields.Tourist__r.Age__c < flightWithFields.Trip__r.Minimum_Age__c) {
