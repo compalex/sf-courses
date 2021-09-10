@@ -19,7 +19,6 @@ public class TouristService {
     }
 
     private static Boolean isDuplicate(Tourist__c newTourist, List<Tourist__c> sameLastNameTourists) {
-
         for(Tourist__c existingTourist : sameLastNameTourists) {
             if(newTourist.Email__c == existingTourist.Email__c) {
                 return true;
