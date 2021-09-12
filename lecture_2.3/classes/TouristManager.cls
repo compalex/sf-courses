@@ -1,5 +1,16 @@
 public class TouristManager {
-	
+
+    public static List<Tourist__c> getByIds(Set<Id> ids) {
+        if(ids == null || ids.isEmpty()) {
+            return new List<Tourist__c>();
+        }
+        return [
+            SELECT Duplicate_Key__c
+            FROM Tourist__c
+            WHERE Id IN :ids
+        ];
+    }
+    
     public static List<Tourist__c> getByName(String name) {
         if(String.isBlank(name)) {
             return new List<Tourist__c>();
@@ -37,14 +48,14 @@ public class TouristManager {
         ];
     }
     
-    public static List<Tourist__c> getByLastName(Set<String> lastNames) {
-        if(lastNames == null || lastNames.isEmpty()) {
+    public static List<Tourist__c> getByDuplicateKeys(Set<String> duplicateKeys, Set<Id> touristIds) {
+        if(duplicateKeys == null || duplicateKeys.isEmpty()) {
             return new List<Tourist__c>();
         }
         return [
-            SELECT LastName__c, Email__c
+            SELECT Duplicate_Key__c
             FROM Tourist__c
-            WHERE LastName__c IN :lastNames
+            WHERE Duplicate_Key__c IN :duplicateKeys AND Id NOT IN :touristIds
         ];
     }
     

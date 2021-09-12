@@ -1,30 +1,29 @@
 public class TouristService {
-    
-    public static void markDuplicates(List<Tourist__c> newTourists) {
-        if(newTourists == null || newTourists.isEmpty()) {
+
+    @future
+    public static void markDuplicatesAsync(Set<Id> touristIds) {
+        if(touristIds == null || touristIds.isEmpty()) {
             return;
         }
-        Set<String> lastNames = new Set<String>();
-        
-        for(Tourist__c newTourist : newTourists) {
-            lastNames.add(newTourist.LastName__c);
-        }
-        List<Tourist__c> sameLastNameTourists = TouristManager.getByLastName(lastNames);
+        List<Tourist__c> newTourists = TouristManager.getByIds(touristIds);
+        Set<String> newDuplicateKeys = new Set<String>();
 
-        for(Tourist__c newTourist : newTourists) {
-            if(isDuplicate(newTourist, sameLastNameTourists)) {
-                newTourist.IsDuplicate__c = true;
+        for(Tourist__c tourist : newTourists) {
+            newDuplicateKeys.add(tourist.Duplicate_Key__c);
+        }
+        Set<String> existingDuplicateKeys = new Set<String>();
+
+        for(Tourist__c tourist : TouristManager.getByDuplicateKeys(newDuplicateKeys, touristIds)) {
+            existingDuplicateKeys.add(tourist.Duplicate_Key__c);
+        }
+        List<Tourist__c> touristsToUpdate = new List<Tourist__c>();
+
+        for(Tourist__c tourist : newTourists) {
+            if(existingDuplicateKeys.contains(tourist.Duplicate_Key__c)) {
+                tourist.IsDuplicate__c = true;
+                touristsToUpdate.add(tourist);
             }
         }
-    }
-
-    private static Boolean isDuplicate(Tourist__c newTourist, List<Tourist__c> sameLastNameTourists) {
-
-        for(Tourist__c existingTourist : sameLastNameTourists) {
-            if(newTourist.Email__c == existingTourist.Email__c) {
-                return true;
-            }
-        }
-        return false;
+        update touristsToUpdate;
     }
 }
