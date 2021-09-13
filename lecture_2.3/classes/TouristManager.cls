@@ -5,7 +5,7 @@ public class TouristManager {
             return new List<Tourist__c>();
         }
         return [
-            SELECT Duplicate_Key__c
+            SELECT Age__c, Duplicate_Key__c
             FROM Tourist__c
             WHERE Id IN :ids
         ];
