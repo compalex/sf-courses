@@ -1,4 +1,4 @@
-trigger FlightTrigger on Flight__c (before update, before insert) {
+trigger FlightTrigger on Flight__c (before insert, before update) {
     if(FlightTriggerHandler.isFirstTime) {
         FlightTriggerHandler.isFirstTime = false;
 
