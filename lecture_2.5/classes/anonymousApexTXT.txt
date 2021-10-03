@@ -1,0 +1,8 @@
+public String JOB_NAME_HALF_THE_HOUR = 'Flight Cleaner Process at Half the Hour';
+public String JOB_NAME_ON_THE_HOUR = 'Flight Cleaner Process at On the Hour';
+public String CRON_HALF_THE_HOUR = '0 7 * * * ?';
+public String CRON_ON_THE_HOUR = '0 37 * * * ?';
+
+FlightDeleteBatch batchProcessor = new FlightDeleteBatch();
+System.schedule(JOB_NAME_HALF_THE_HOUR, CRON_HALF_THE_HOUR, batchProcessor);
+System.schedule(JOB_NAME_ON_THE_HOUR, CRON_ON_THE_HOUR, batchProcessor);
