@@ -48,14 +48,27 @@ public class TouristManager {
         ];
     }
     
-    public static List<Tourist__c> getByDuplicateKeys(Set<String> duplicateKeys, Set<Id> touristIds) {
+    public static List<Tourist__c> getByDuplicateKeys(Set<String> duplicateKeys, Set<Id> excludeIds) {
         if(duplicateKeys == null || duplicateKeys.isEmpty()) {
             return new List<Tourist__c>();
         }
         return [
             SELECT Duplicate_Key__c
             FROM Tourist__c
-            WHERE Duplicate_Key__c IN :duplicateKeys AND Id NOT IN :touristIds
+            WHERE Duplicate_Key__c IN :duplicateKeys
+                AND Id NOT IN :excludeIds
+        ];
+    }
+
+    public static List<Tourist__c> getByDuplicateKey(String duplicateKey) {
+        if(String.isBlank(duplicateKey)) {
+            return new List<Tourist__c>();
+        }
+
+        return [
+                SELECT Duplicate_Key__c
+                FROM Tourist__c
+                WHERE Duplicate_Key__c = :duplicateKey
         ];
     }
     
@@ -74,5 +87,29 @@ public class TouristManager {
             FROM Tourist__c 
             WHERE Number_Of_Trips__c = 0
         ];
+    }
+
+    public static List<Tourist__c> getByFuzzyname(String fuzzyname) {
+        if(String.isBlank(fuzzyname)) {
+            return new List<Tourist__c>();
+        }
+
+        return [
+            FIND :fuzzyname
+            IN NAME FIELDS
+            RETURNING Tourist__c
+        ].get(0);
+    }
+
+    public static List<Tourist__c> getByFuzzynameAndAge(String fuzzyname, Integer age) {
+        if(String.isBlank(fuzzyname) || age == null) {
+            return new List<Tourist__c>();
+        }
+
+        return [
+                FIND :fuzzyname
+                IN NAME FIELDS
+                RETURNING Tourist__c(Age__c WHERE Age__c = :age)
+        ].get(0);
     }
 }

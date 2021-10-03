@@ -1,4 +1,13 @@
 public class Constants {
+    public static final String WEATHER_API_DATA = 'data';
+    public static final String WEATHER_API_DATE = 'valid_date';
+    public static final String WEATHER_API_TEMP = 'temp';
+    public static final String WEATHER_API_URI = 'callout:Weatherbit';
+    public static final String WEATHER_API_LAT = '?lat=';
+    public static final String WEATHER_API_LON = '&lon=';
+    public static final String WEATHER_API_KEY = '&key=f45fced3b1464646a21827b12ea3d5ae';
+    public static final String WEATHER_FORECAST_EXCEPTION_MSG = 'Something went wrong with the response! ';
+    public static final String HTTP_REQUEST_METHOD_GET = 'GET';
     public static final String SPLIT_SYMBOL = ',';
     public static final String ERROR_INVALID_AGE = 'Invalid age!';
     public static final String ERROR_INVALID_START_DATE = 'Invalid start date!';
@@ -9,10 +18,10 @@ public class Constants {
     public static final String EMAIL_SENDER_NAME = 'SFDC courses inc.';
     public static final String EMAIL_TOURIST_ID = '<br>TouristId: ';
     public static final String EMAIL_TOURIST_NUMBER = ', number of Flights deleted: ';
-    public static final String JOB_NAME_HALF_THE_HOUR = 'Flight Cleaner Process at Half the Hour';
-    public static final String JOB_NAME_ON_THE_HOUR = 'Flight Cleaner Process at On the Hour';
-    public static final String CRON_HALF_THE_HOUR = '0 0 * * * ?';
-    public static final String CRON_ON_THE_HOUR = '0 30 * * * ?';
-    public static final String BATCH_QUERY_LOCATOR =
-            'SELECT Id, Tourist__c FROM Flight__c WHERE Status__c = \'Declined\' AND CreatedDate < LAST_N_DAYS:30';
+    public static final String ERROR_DUPLICATE_EXISTS = 'Error! There is a duplicate in DB';
+    public static final String ERROR_MSG_EMPTY_NAME = 'The name must be not empty';
+    public static final String ERROR_MSG_INVALID_AGE = 'The age must be a number';
+    public static final Integer STATUS_CODE_409 = 409;
+    public static final Integer STATUS_CODE_404 = 404;
+    public static final Integer STATUS_CODE_200 = 200;
 }

@@ -5,25 +5,25 @@ public class TouristService {
         if(touristIds == null || touristIds.isEmpty()) {
             return;
         }
-        List<Tourist__c> newTourists = TouristManager.getByIds(touristIds);
-        Set<String> newDuplicateKeys = new Set<String>();
+        Map<String, Tourist__c>  newTouristsByKey = new Map<String, Tourist__c>();
+        Map<String, Tourist__c>  existingTouristsByKey = new Map<String, Tourist__c>();
 
-        for(Tourist__c tourist : newTourists) {
-            newDuplicateKeys.add(tourist.Duplicate_Key__c);
+        for(Tourist__c tourist : TouristManager.getByIds(touristIds)) {
+            newTouristsByKey.put(tourist.Duplicate_Key__c, tourist);
         }
-        Set<String> existingDuplicateKeys = new Set<String>();
 
-        for(Tourist__c tourist : TouristManager.getByDuplicateKeys(newDuplicateKeys, touristIds)) {
-            existingDuplicateKeys.add(tourist.Duplicate_Key__c);
+        for(Tourist__c tourist : TouristManager.getByDuplicateKeys(newTouristsByKey.keySet(), touristIds)) {
+            existingTouristsByKey.put(tourist.Duplicate_Key__c, tourist);
         }
-        List<Tourist__c> touristsToUpdate = new List<Tourist__c>();
+        newTouristsByKey.keySet().retainAll(existingTouristsByKey.keySet());
 
-        for(Tourist__c tourist : newTourists) {
-            if(existingDuplicateKeys.contains(tourist.Duplicate_Key__c)) {
-                tourist.IsDuplicate__c = true;
-                touristsToUpdate.add(tourist);
-            }
+        for(Tourist__c tourist : newTouristsByKey.values()) {
+            tourist.IsDuplicate__c = true;
         }
-        update touristsToUpdate;
+        update newTouristsByKey.values();
+    }
+
+    public static boolean isDuplicate(Tourist__c tourist) {
+        return !TouristManager.getByDuplicateKey(tourist.Duplicate_Key__c).isEmpty();
     }
 }
