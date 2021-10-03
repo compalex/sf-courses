@@ -1,0 +1,5 @@
+public String jobName = 'Weather Forecasts Updater';
+public String cron = '0 0 0 * * ? *';
+
+WeatherForecastUpdater batchProcessor = new WeatherForecastUpdater();
+System.schedule(jobName, cron, batchProcessor);
