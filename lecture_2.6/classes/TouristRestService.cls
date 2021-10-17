@@ -11,43 +11,62 @@ global with sharing class TouristRestService {
         String age = request.params.get(REQ_PARAM_AGE);
 
         try {
-            validateRequest(fuzzyName, age);
+            validateGetRequest(fuzzyName, age);
+            List<Tourist__c> tourists = (age == null)
+                ? TouristManager.getByFuzzyname(fuzzyName)
+                : TouristManager.getByFuzzynameAndAge(fuzzyName, Integer.valueOf(age));
+            response.statusCode = Constants.STATUS_CODE_200;
+            response.responseBody = Blob.valueOf(JSON.serializePretty(tourists));
         } catch(RestRequestValidationException ex) {
             response.statusCode = ex.getStatusCode();
             response.responseBody = Blob.valueOf(ex.getMessage());
-            return;
+        } catch (Exception ex) {
+            response.statusCode = Constants.STATUS_CODE_500;
+            response.responseBody = Blob.valueOf(Constants.ERROR_MSG_500);
         }
-
-        List<Tourist__c> tourists;
-        if(age == null) {
-            tourists = TouristManager.getByFuzzyname(fuzzyName);
-        } else {
-            tourists = TouristManager.getByFuzzynameAndAge(fuzzyName, Integer.valueOf(age));
-        }
-        response.statusCode = Constants.STATUS_CODE_200;
-        response.responseBody = Blob.valueOf(JSON.serializePretty(tourists));
     }
 
     @HttpPost
-    global static void createTourist() {
+    global static void createTourist(TouristRestWrapper touristWrapper) {
         RestResponse response = RestContext.response;
-        TouristRestWrapper touristWrapper = (TouristRestWrapper) JSON.deserialize(
-                RestContext.request.requestBody.toString(), TouristRestWrapper.class);
-        Tourist__c tourist = new Tourist__c(Name = touristWrapper.getName(), Birthdate__c = touristWrapper.getDOB());
 
-        if(TouristService.isDuplicate(tourist)) {
-            response.statusCode = Constants.STATUS_CODE_409;
-            response.responseBody = Blob.valueOf(Constants.ERROR_DUPLICATE_EXISTS);
-        } else {
-            insert tourist;
+        try {
+            validatePostRequest(touristWrapper.lastName, touristWrapper.email);
+            Tourist__c tourist = new Tourist__c(
+                    LastName__c = touristWrapper.lastName,
+                    Email__c = touristWrapper.email,
+                    Birthdate__c = (touristWrapper.birthdate == null) ? null : touristWrapper.getDateBirthdate()
+            );
+            if(TouristService.isDuplicate(touristWrapper.getDuplicateKey())) {
+                response.statusCode = Constants.STATUS_CODE_409;
+                response.responseBody = Blob.valueOf(Constants.ERROR_DUPLICATE_EXISTS);
+            } else {
+                insert tourist;
+                response.statusCode = Constants.STATUS_CODE_200;
+                response.responseBody = Blob.valueOf(Constants.RESPONSE_SUCCESS);
+            }
+        } catch(RestRequestValidationException ex) {
+            response.statusCode = ex.getStatusCode();
+            response.responseBody = Blob.valueOf(ex.getMessage());
+        } catch(Exception ex) {
+            response.statusCode = Constants.STATUS_CODE_500;
+            response.responseBody = Blob.valueOf(Constants.ERROR_MSG_500);
         }
     }
 
-    private static void validateRequest(String fuzzyName, String age) {
+    private static void validateGetRequest(String fuzzyName, String age) {
         if(String.isBlank(fuzzyName)) {
             throw new RestRequestValidationException(Constants.ERROR_MSG_EMPTY_NAME, Constants.STATUS_CODE_404);
         } else if(!(age == null || age.isNumeric())) {
             throw new RestRequestValidationException(Constants.ERROR_MSG_INVALID_AGE, Constants.STATUS_CODE_404);
+        }
+    }
+
+    private static void validatePostRequest(String lastName, String email) {
+        if(String.isBlank(lastName)) {
+            throw new RestRequestValidationException(Constants.ERROR_MSG_EMPTY_NAME, Constants.STATUS_CODE_404);
+        } else if(String.isBlank(email)) {
+            throw new RestRequestValidationException(Constants.ERROR_MSG_EMPTY_EMAIL, Constants.STATUS_CODE_404);
         }
     }
 }

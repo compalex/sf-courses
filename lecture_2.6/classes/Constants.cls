@@ -20,8 +20,13 @@ public class Constants {
     public static final String EMAIL_TOURIST_NUMBER = ', number of Flights deleted: ';
     public static final String ERROR_DUPLICATE_EXISTS = 'Error! There is a duplicate in DB';
     public static final String ERROR_MSG_EMPTY_NAME = 'The name must be not empty';
+    public static final String ERROR_MSG_EMPTY_EMAIL = 'The email should be not empty';
     public static final String ERROR_MSG_INVALID_AGE = 'The age must be a number';
-    public static final Integer STATUS_CODE_409 = 409;
-    public static final Integer STATUS_CODE_404 = 404;
+    public static final String ERROR_MSG_500 = 'Internal Server Error!';
+    public static final String RESPONSE_SUCCESS = 'OK';
+    public static final Integer DAYS_IN_YEAR = 365;
     public static final Integer STATUS_CODE_200 = 200;
+    public static final Integer STATUS_CODE_404 = 404;
+    public static final Integer STATUS_CODE_409 = 409;
+    public static final Integer STATUS_CODE_500 = 500;
 }
