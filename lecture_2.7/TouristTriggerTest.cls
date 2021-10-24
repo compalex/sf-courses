@@ -40,13 +40,14 @@ private class TouristTriggerTest {
         }
 
         Test.startTest();
+            TouristTriggerHandler.isFirstTime = true;
             update inactiveTourists;
         Test.stopTest();
 
         List<Flight__c> declinedFlights = [
-            SELECT Id
+            SELECT Id, Status__c
             FROM Flight__c
-            WHERE Status__c LIKE :Constants.FLIGHT_STATUS_ACCEPTED
+            WHERE Status__c LIKE :Constants.FLIGHT_STATUS_DECLINED
         ];
 
         System.assertNotEquals(null, inactiveTourists);
