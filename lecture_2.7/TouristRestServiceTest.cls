@@ -3,26 +3,28 @@ private class TouristRestServiceTest {
     private static final String TOURIST_LAST_NAME = 'Daniels';
     private static final String TOURIST_EMAIL = 'dan@gmail.com';
     private static final String TOURIST_BIRTHDATE = '800674336000';
-    private static final String FUZZYNAME = 'fuzzyname';
+    private static final String PARAM_FUZZYNAME = 'fuzzyname';
     private static final Integer NUM_TO_CREATE = 1;
+    private static final String RESPONSE_BODY = '"Name" : "Test Record #0"'; 
 
     @IsTest
     static void testGetTourists() {
         Tourist__c tourist = TestDataFactory.createTourists(NUM_TO_CREATE)[0];
+        Test.setFixedSearchResults(new List<Id>{tourist.Id});
         
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
         req.httpMethod = Constants.HTTP_REQUEST_METHOD_GET;
-        req.params.put(FUZZYNAME, tourist.Name);
-        req.params.put('age', String.valueOf(TouristService.calculateAge(tourist.Birthdate__c)));
+        req.params.put(PARAM_FUZZYNAME, tourist.Name);
+
+        RestContext.request = req;
+        RestContext.response = res;
 
         Test.startTest();
-            RestContext.request = req;
-            RestContext.response = res;
             TouristRestService.getTourists();
         Test.stopTest();
 
-        System.assertEquals('[ ]', res.responseBody.toString());
+        System.assertEquals(true, res.responseBody.toString().contains(RESPONSE_BODY));
         System.assertEquals(Constants.STATUS_CODE_200, res.statusCode);
     }
 
@@ -33,7 +35,7 @@ private class TouristRestServiceTest {
         RestRequest req = new RestRequest();
         RestResponse res = new RestResponse();
         req.httpMethod = Constants.HTTP_REQUEST_METHOD_GET;
-        req.params.put(FUZZYNAME, '');
+        req.params.put(PARAM_FUZZYNAME, '');
 
         Test.startTest();
             RestContext.request = req;
@@ -67,7 +69,7 @@ private class TouristRestServiceTest {
         System.assertNotEquals(null, tourists);
         System.assertEquals(TOURIST_LAST_NAME, tourists.get(0).LastName__c);
         System.assertEquals(TOURIST_EMAIL, tourists.get(0).Email__c);
-        System.assertEquals(touristWrapper.getDateBirthdate(), tourists.get(0).Birthdate__c);
+        System.assertEquals(touristWrapper.getBirthdate(), tourists.get(0).Birthdate__c);
         System.assertEquals(Constants.STATUS_CODE_200, res.statusCode);
     }
 

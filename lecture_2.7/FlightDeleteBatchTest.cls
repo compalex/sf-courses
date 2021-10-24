@@ -17,7 +17,6 @@ private class FlightDeleteBatchTest {
 
         Test.startTest();
             Id batchId = Database.executeBatch(new FlightDeleteBatch());
-            Integer emailInvocations = Limits.getEmailInvocations();
         Test.stopTest();
     
         List<Flight__c> flightsAfterBatch = [
@@ -29,7 +28,6 @@ private class FlightDeleteBatchTest {
         System.assertNotEquals(null, flightsAfterBatch);
         System.assertEquals(DECLINED_NUM_TO_CREATE, flightsBeforeBatch.size());
         System.assertEquals(true, flightsAfterBatch.isEmpty());
-        System.assertEquals(0, emailInvocations);
     }
 
     @IsTest
@@ -45,6 +43,7 @@ private class FlightDeleteBatchTest {
             FROM CronTrigger
             WHERE Id = :jobId
         ];
+        
         System.assertNotEquals(null, cronTrigger);
         System.assertEquals(CRON, cronTrigger.CronExpression);
         System.assertEquals(0, cronTrigger.TimesTriggered);

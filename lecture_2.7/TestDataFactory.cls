@@ -6,10 +6,12 @@ public class TestDataFactory {
     private static final Integer GEOLOCATION_DECIMAL_SCALE = 2;
     private static final Integer MIN_YEAR_OF_BIRTH = 1900;
     private static final Integer MAX_YEAR_OF_BIRTH = 2020;
+    private static final Integer MAX_VALID_YEAR_OF_BIRTH = 1950;
     private static final Integer MONTH_OF_BIRTH = 11;
     private static final Integer DAY_OF_BIRTH = 11;
     private static final Integer MAX_EMAIL_NUM = 1000000;
     private static final Integer NUM_DAYS_AGO = -50;
+    private static final Integer MIN_AGE = 21;
     private static final Decimal MIN_LATITUDE = -90.00;
     private static final Decimal MAX_LATITUDE = 90.00;
     private static final Decimal MIN_LONGITUDE = -180.00;
@@ -24,6 +26,7 @@ public class TestDataFactory {
                 LastName__c = RECORD_NAME + i,
                 Email__c = RECORD_EMAIL + TestDataUtils.generateRandomInteger(0, MAX_EMAIL_NUM),
                 IsDuplicate__c = false,
+                Active__c = true,
                 Birthdate__c = Date.newInstance(
                         TestDataUtils.generateRandomInteger(MIN_YEAR_OF_BIRTH, MAX_YEAR_OF_BIRTH),
                         MONTH_OF_BIRTH,
@@ -57,6 +60,7 @@ public class TestDataFactory {
         for(Integer i = 0; i < numToCreate; i++) {
             flights.add(new Flight__c(
                     Name = RECORD_NAME + i,
+                    Status__c = Constants.FLIGHT_STATUS_ACCEPTED,
                     Tourist__c = tourists.get(i).Id,
                     Trip__c = trips.get(i).Id
             ));
@@ -64,6 +68,50 @@ public class TestDataFactory {
 
         insert flights;
         return flights;
+    }
+
+    public static Flight__c createUnvalidFlight() {
+        Tourist__c tourist = new Tourist__c(
+            Name = RECORD_NAME,
+            Birthdate__c = Date.today()
+        );
+        insert tourist;
+
+        Trip__c trip = new Trip__c(
+            Name = RECORD_NAME,
+            Minimum_Age__c = MIN_AGE
+        );
+        insert trip;
+
+        return new Flight__c(
+            Name = RECORD_NAME,
+            Tourist__c = tourist.Id,
+            Trip__c = trip.Id
+        );
+    }
+
+    public static Flight__c createValidFlight() {
+        Tourist__c tourist = new Tourist__c(
+            Name = RECORD_NAME,
+            Birthdate__c = Date.newInstance(
+                        TestDataUtils.generateRandomInteger(MIN_YEAR_OF_BIRTH, MAX_VALID_YEAR_OF_BIRTH),
+                        MONTH_OF_BIRTH,
+                        DAY_OF_BIRTH
+            )
+        );
+        insert tourist;
+
+        Trip__c trip = new Trip__c(
+            Name = RECORD_NAME,
+            Minimum_Age__c = MIN_AGE
+        );
+        insert trip;
+
+        return new Flight__c(
+            Name = RECORD_NAME,
+            Tourist__c = tourist.Id,
+            Trip__c = trip.Id
+        );
     }
 
     public static List<Space_Point__c> createSpacePoints(Integer numToCreate) {

@@ -1,9 +1,7 @@
 @IsTest
 private class WeatherForecastServiceTest {
-    private static final Integer NUM_TO_CREATE = 3;
     private static final Decimal LATITUDE = 55.55;
     private static final Decimal LONGITUDE = 77.77;
-    private static final String JSON_SUBSTRING = '{"valid_date":"2022-10-15","temp":7.2}';
 
     @IsTest
     static void testGetForecasts() {
@@ -12,25 +10,22 @@ private class WeatherForecastServiceTest {
         String jsonBody = WeatherForecastService.getForecasts(LATITUDE, LONGITUDE);
 
         System.assertNotEquals(null, jsonBody);
-        System.assertEquals(true, jsonBody.contains(JSON_SUBSTRING));
+        System.assertEquals(true, jsonBody.contains(WeatherForecastCalloutMock.jsonBody));
     }
 
     @IsTest
-    static void testUpdateForecasts() {
-        Test.setMock(HttpCalloutMock.class, new WeatherForecastCalloutMock());
-        List<Space_Point__c> beforeUpdate = TestDataFactory.createSpacePoints(NUM_TO_CREATE);
+    static void testGetForecasts_forInvalidParams() {
+        Test.setMock(HttpCalloutMock.class, new WeatherForecastCalloutInvalidMock());
+        String jsonBody;
+        WeatherForecastException exToCatch;
 
-        Test.startTest();
-            WeatherForecastUpdater.updateForecasts();
-        Test.stopTest();
+        try {
+            jsonBody = WeatherForecastService.getForecasts(null, null);
+        } catch (WeatherForecastException ex) {
+            exToCatch = ex;
+        }
 
-        List<Space_Point__c> afterUpdate = [
-            SELECT Id, (SELECT Id FROM Weather_Daily_Forecasts__r)
-            FROM Space_Point__c
-        ];
-
-        System.assertNotEquals(null, afterUpdate.get(0).Weather_Daily_Forecasts__r);
-        System.assertNotEquals(7.2, afterUpdate.get(0).Weather_Daily_Forecasts__r.Average_Temperature__c);
-        System.assertEquals(3, afterUpdate.size());
+        System.assertEquals(null, jsonBody);
+        System.assertEquals(true, exToCatch.getMessage().contains(String.valueOf(Constants.STATUS_CODE_409)));
     }
 }

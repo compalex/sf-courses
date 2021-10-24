@@ -15,6 +15,10 @@ public with sharing class WeatherForecastService {
     }
 
     public static Map<Date, Decimal> parseJSONBodyUntyped(String jsonBody) {
+        if(String.isBlank(jsonBody)) {
+            return new Map<Date, Decimal>();
+        }
+
         Map<String, Object> deserializedJSON = (Map<String, Object>) JSON.deserializeUntyped(jsonBody);
         List<Object> allDaysRecords = (List<Object>) deserializedJSON.get(Constants.WEATHER_API_DATA);
         Map<Date, Decimal> tempsByDate = new Map<Date, Decimal>();

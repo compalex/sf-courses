@@ -12,6 +12,7 @@ public class Constants {
     public static final String ERROR_INVALID_AGE = 'Invalid age!';
     public static final String ERROR_INVALID_START_DATE = 'Invalid start date!';
     public static final String FLIGHT_STATUS_DECLINED = 'Declined';
+    public static final String FLIGHT_STATUS_ACCEPTED = 'Accepted';
     public static final String CUSTOM_MDT_TYPES_EMAIL_RECORD = 'Declined_Flights_Email';
     public static final String EMAIL_HTML_HEADER = 'Flights have been deleted for the following tourists:';
     public static final String EMAIL_SUBJECT = 'Flight have been deleted!';
@@ -24,6 +25,7 @@ public class Constants {
     public static final String ERROR_MSG_INVALID_AGE = 'The age must be a number';
     public static final String ERROR_MSG_500 = 'Internal Server Error!';
     public static final String RESPONSE_SUCCESS = 'OK';
+    public static final String NO_TRIP_ID_ERROR = 'There is no trip id!';
     public static final Integer DAYS_IN_YEAR = 365;
     public static final Integer STATUS_CODE_200 = 200;
     public static final Integer STATUS_CODE_404 = 404;
