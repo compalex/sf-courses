@@ -7,10 +7,8 @@ private class TouristTriggerTest {
     @IsTest
     static void testOnAfterInsert() {
         Test.startTest();
-            Map<Id, Tourist__c> tourists = new Map<Id, Tourist__c>(TestDataFactory.createTourists(NUM_TO_CREATE));
-            Map<Id, Tourist__c> duplicates = new Map<Id, Tourist__c>(
-                TestDataFactory.createDuplicateTourists(tourists.values(), DUPLICATE_NUM)
-            );
+            List<Tourist__c> tourists = TestDataFactory.createTourists(NUM_TO_CREATE);
+            List<Tourist__c> duplicates = TestDataFactory.createDuplicateTourists(tourists, DUPLICATE_NUM);
         Test.stopTest();
 
         List<Tourist__c> resultTourists = [
@@ -25,34 +23,27 @@ private class TouristTriggerTest {
     }
 
     @IsTest 
-    static void testOnAfterUpdate() { //TODO
-        TestDataFactory.createFlights(NUM_TO_CREATE);
-        List<Tourist__c> tourists = [
-            SELECT Active__c
-            FROM Tourist__c
-            WHERE Active__c = true
-        ];
+    static void testOnAfterUpdate() { 
+        List<Flight__c> flights = TestDataFactory.createFlights(NUM_TO_CREATE);
         List<Tourist__c> inactiveTourists = new List<Tourist__c>();
 
         for(Integer i = 0; i < INACTIVE_NUM; i++) {
-            tourists.get(i).Active__c = false;
-            inactiveTourists.add(tourists.get(i));
+            flights.get(i).Tourist__r.Active__c = false;
+            inactiveTourists.add(flights.get(i).Tourist__r);
         }
+        TouristTriggerHandler.isFirstTime = true;
 
         Test.startTest();
-            TouristTriggerHandler.isFirstTime = true;
             update inactiveTourists;
         Test.stopTest();
 
         List<Flight__c> declinedFlights = [
             SELECT Id, Status__c
             FROM Flight__c
-            WHERE Status__c LIKE :Constants.FLIGHT_STATUS_DECLINED
+            WHERE Status__c = :Constants.FLIGHT_STATUS_DECLINED
         ];
 
-        System.assertNotEquals(null, inactiveTourists);
-        System.assertNotEquals(null, declinedFlights);
-        System.assertEquals(NUM_TO_CREATE, tourists.size());
+        System.assertEquals(NUM_TO_CREATE, flights.size());
         System.assertEquals(INACTIVE_NUM, inactiveTourists.size());
         System.assertEquals(false, inactiveTourists[0].Active__c);
         System.assertEquals(INACTIVE_NUM, declinedFlights.size());

@@ -5,7 +5,7 @@ public class TestDataFactory {
     private static final String CRON = '0 30 * * * ?';
     private static final Integer GEOLOCATION_DECIMAL_SCALE = 2;
     private static final Integer MIN_YEAR_OF_BIRTH = 1900;
-    private static final Integer MAX_YEAR_OF_BIRTH = 2020;
+    private static final Integer MAX_YEAR_OF_BIRTH = 1920;
     private static final Integer MAX_VALID_YEAR_OF_BIRTH = 1950;
     private static final Integer MONTH_OF_BIRTH = 11;
     private static final Integer DAY_OF_BIRTH = 11;
@@ -44,7 +44,8 @@ public class TestDataFactory {
 
         for(Integer i = 0; i < numToCreate; i++) {
             trips.add(new Trip__c(
-                Name = RECORD_NAME + i
+                Name = RECORD_NAME + i,
+                Minimum_Age__c = 10
             ));
         }
 
@@ -59,8 +60,8 @@ public class TestDataFactory {
 
         for(Integer i = 0; i < numToCreate; i++) {
             flights.add(new Flight__c(
-                    Name = RECORD_NAME + i,
                     Status__c = Constants.FLIGHT_STATUS_ACCEPTED,
+                    Tourist__r = tourists.get(i),
                     Tourist__c = tourists.get(i).Id,
                     Trip__c = trips.get(i).Id
             ));
@@ -84,7 +85,6 @@ public class TestDataFactory {
         insert trip;
 
         return new Flight__c(
-            Name = RECORD_NAME,
             Tourist__c = tourist.Id,
             Trip__c = trip.Id
         );
@@ -108,7 +108,7 @@ public class TestDataFactory {
         insert trip;
 
         return new Flight__c(
-            Name = RECORD_NAME,
+            Status__c = 'Accepted',
             Tourist__c = tourist.Id,
             Trip__c = trip.Id
         );
@@ -156,7 +156,6 @@ public class TestDataFactory {
 
         for(Integer i = 0; i < numToCreate; i++) {
             Flight__c flight = new Flight__c(
-                Name = RECORD_NAME + i,
                 Tourist__c = tourists.get(i).Id,
                 Trip__c = trips.get(i).Id,
                 Status__c = Constants.FLIGHT_STATUS_DECLINED

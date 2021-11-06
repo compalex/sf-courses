@@ -1,7 +1,7 @@
 @IsTest
 private class FlightTriggerTest {
     private static final Integer NUM_TO_CREATE = 10;
-    private static final String UPDATED_NAME = 'test';
+    private static final String UPDATED_STATUS = 'Offer Pending';
     
     @IsTest
     static void testOnBeforeInsert() {
@@ -27,8 +27,6 @@ private class FlightTriggerTest {
             FROM Flight__c
         ];
 
-        System.assertNotEquals(null, unvalidFlights);
-        System.assertNotEquals(null, insertedFlights);
         System.assertEquals(true, insertedFlights.isEmpty());
         System.assertEquals(true, exToCatch.getMessage().contains(Constants.ERROR_INVALID_AGE));
     }
@@ -43,7 +41,7 @@ private class FlightTriggerTest {
         update relatedTrip;
         
         DmlException exToCatch;
-        flight.Name = UPDATED_NAME;
+        flight.Status__c = UPDATED_STATUS;
 
         Test.startTest();
             try {

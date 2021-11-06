@@ -6,20 +6,20 @@ private class WeatherForecastUpdaterTest {
     @IsTest
     static void testUpdateForecasts() {
         Test.setMock(HttpCalloutMock.class, new WeatherForecastCalloutMock());
-        List<Space_Point__c> beforeUpdate = TestDataFactory.createSpacePoints(NUM_TO_CREATE);
+        TestDataFactory.createSpacePoints(NUM_TO_CREATE);
 
         Test.startTest();
             WeatherForecastUpdater.updateForecasts();
         Test.stopTest();
 
-        List<Space_Point__c> afterUpdate = [
+        List<Space_Point__c> spacePoints = [
             SELECT Id, (SELECT Average_Temperature__c FROM Weather_Daily_Forecasts__r)
             FROM Space_Point__c
         ];
 
-        System.assertNotEquals(null, afterUpdate[0].Weather_Daily_Forecasts__r);
-        System.assertEquals(7.2, afterUpdate[0].Weather_Daily_Forecasts__r[0].Average_Temperature__c);
-        System.assertEquals(3, afterUpdate.size());
+        System.assertEquals(3, spacePoints.size());
+        System.assertEquals(2, spacePoints[0].Weather_Daily_Forecasts__r.size());
+        System.assertEquals(7.2, spacePoints[0].Weather_Daily_Forecasts__r[0].Average_Temperature__c);
     }
 
     @IsTest
