@@ -1,0 +1,33 @@
+<template>
+    <c-input-lookup-tourist onselected={handleTouristSelected}> </c-input-lookup-tourist>
+    <template if:true={trips}>
+        <div class="slds-grid slds-wrap">
+            <div class="slds-size_1-of-2">
+                <lightning-card>
+                    <div class="slds-card__header slds-grid">
+                        <header class="slds-media slds-media_center slds-has-flexi-truncate">
+                            <lightning-icon icon-name="custom:custom20" title="custom20"></lightning-icon>
+                            <div class="slds-media__body">
+                                <h2 class="slds-card__header-title">
+                                    <span>Trips ({trips.length})</span>
+                                </h2>
+                            </div>
+                            <div class="slds-no-flex">
+                                <lightning-button label="Submit" onclick={handleBtnClick} class="slds-m-left_x-small"></lightning-button>
+                            </div>
+                        </header>
+                    </div>
+                    <c-trip-card-list trips={trips} onclicked={handleCardClicked}></c-trip-card-list>
+                </lightning-card>
+            </div>
+            <div class="slds-size_1-of-2">
+                <template if:true={hasDetails}>
+                    <c-trip-details record-id={tripId}></c-trip-details>
+                </template>
+            </div>  
+        </div>
+    </template>
+    <template if:true={isError}>
+        <p>{errorMessage}</p>
+    </template>
+</template>

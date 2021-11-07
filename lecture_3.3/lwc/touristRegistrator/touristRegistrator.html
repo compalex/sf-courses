@@ -1,0 +1,23 @@
+<template>
+    <lightning-card>
+        <template if:true={tourists.data}>
+            <template if:true={hasAvailableSeats}>  
+                <lightning-button 
+                    label="Add to Trip" 
+                    title="Click to assign selected Tourists to the Trip"
+                    onclick={handleBtnClick}
+                    class="slds-m-left_x-small"
+                >
+                </lightning-button>
+                <lightning-datatable 
+                    key-field="Id" 
+                    data={tourists.data} 
+                    columns={columns}
+                    class="slds-m-top_x-small"
+                >
+                </lightning-datatable>
+                <c-confirmation-window onsubmitted={handleSubmitted}> </c-confirmation-window>
+            </template>
+        </template>
+    </lightning-card>
+</template>
