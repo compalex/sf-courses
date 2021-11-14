@@ -1,14 +1,22 @@
 import { LightningElement, api, wire } from 'lwc';
-import { createRecord, getRecord } from 'lightning/uiRecordApi';
+import { getRecord } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
+
 import NotEnoughSeats from '@salesforce/label/c.NotEnoughSeats';
+import NoTouristsSelected from '@salesforce/label/c.NoTouristsSelected';
+import TripAssignmentTitle from '@salesforce/label/c.TripAssignmentTitle';
+import TripAssignConfirmMsg from '@salesforce/label/c.TripAssignConfirmMsg';
 import TouristsAssigned from '@salesforce/label/c.TouristsAssigned';
+
 import AVAILABLE_SEATS_FIELD from '@salesforce/schema/Trip__c.Available_seats__c';
 import NAME_FIELD from '@salesforce/schema/Tourist__c.Name';
 import EMAIL_FIELD from '@salesforce/schema/Tourist__c.Email__c';
 import GENDER_FIELD from '@salesforce/schema/Tourist__c.Gender__c';
+
 import getSuitableTourists from '@salesforce/apex/TripController.getSuitableTourists';
+import insertFlights from '@salesforce/apex/TripController.insertFlights';
+
+import {getErrorShowToastEvent, getSuccessShowToastEvent} from 'c/utility';
 
 const COLUMNS = [
     { label: 'Tourist Name', fieldName: NAME_FIELD.fieldApiName, type: 'text' },
@@ -18,51 +26,55 @@ const COLUMNS = [
 
 export default class TouristRegistrator extends LightningElement {
     @api recordId;
+
+    isLoading = false;
     columns = COLUMNS;
-    @wire(getSuitableTourists, {tripId: '$recordId'})
+
+    @wire(getSuitableTourists, {tripId: '$recordId'}) 
     tourists;
+
     @wire(getRecord, {recordId: '$recordId', fields: [AVAILABLE_SEATS_FIELD]})
     trip;
 
-    get hasAvailableSeats() {
-        return (this.trip.data.fields.Available_seats__c.value > 0);
-    }
-
     label = {
         NotEnoughSeats,
+        NoTouristsSelected,
+        TripAssignmentTitle,
+        TripAssignConfirmMsg,
         TouristsAssigned
     };
 
     handleBtnClick(event) {
-        var rowsNum = this.template.querySelector('lightning-datatable').getSelectedRows().length;
+        let rowsNum = this.template.querySelector('lightning-datatable').getSelectedRows().length;
 
-        if(this.trip.data.fields.Available_seats__c.value >= rowsNum) {
+        if(!rowsNum) {
+            this.dispatchEvent(getErrorShowToastEvent(this.label.NoTouristsSelected));
+        } else if(this.trip.data.fields.Available_seats__c.value >= rowsNum) {
             this.showConfirmationWindow();
         } else {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Error!',
-                    message: this.label.NotEnoughSeats,
-                    variant: 'error'
-                })
-            );
+            this.dispatchEvent(getErrorShowToastEvent(this.label.NotEnoughSeats));
         }
     }
 
     handleSubmitted() {
-        var selectedRows = this.template.querySelector('lightning-datatable').getSelectedRows();
-        
-        selectedRows.forEach(tourist => {
-            this.createFlight(tourist.Id);
-        });
+        this.isLoading = true;
+        let selectedRows = this.template.querySelector('lightning-datatable').getSelectedRows();
+        let touristsToAssign = [];
 
-        this.dispatchEvent(
-            new ShowToastEvent({
-                title: 'Success!',
-                message: this.label.TouristsAssigned,
-                variant: 'success'
-            })
-        );
+        selectedRows.forEach(tourist => { 
+            touristsToAssign.push(tourist.Id);
+        });     
+
+        insertFlights({touristIds: touristsToAssign, tripId: this.recordId})
+        .then(result => {       
+            refreshApex(this.tourists);
+            this.isLoading = false;
+            this.dispatchEvent(getSuccessShowToastEvent(this.label.TouristsAssigned));
+        })
+        .catch(error=> {
+            this.isLoading = false;
+            this.dispatchEvent(getErrorShowToastEvent(error.message));
+        });
     }
 
     showConfirmationWindow() {
@@ -70,16 +82,11 @@ export default class TouristRegistrator extends LightningElement {
         modal.openModalBox();
     }
 
-    createFlight(touristId) {
-        var fields = {'Tourist__c' : touristId, 'Trip__c' : this.recordId, 'Status__c' : 'Offer Pending'};
-        var objRecordInput = {'apiName' : 'Flight__c', fields};    
+    get hasAvailableSeats() {
+        return (this.trip.data.fields.Available_seats__c.value > 0);
+    }
 
-        createRecord(objRecordInput)
-        .then(response => {
-            refreshApex(this.tourists);
-        })
-        .catch(error => {
-            alert('Error: ' + JSON.stringify(error));
-        })
+    get isDisabled() {
+        return !(this.hasAvailableSeats);
     }
 }

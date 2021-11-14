@@ -1,9 +1,14 @@
 import { LightningElement, api } from 'lwc';
+import ConfirmationWindowHeader from '@salesforce/label/c.ConfirmationWindowHeader';
 
 export default class ConfirmationWindow extends LightningElement {
     isModalBoxOpen = false;
+    headerTxt = ConfirmationWindowHeader;
 
-    @api openModalBox() {
+    @api message;
+
+    @api 
+    openModalBox() {
         this.isModalBoxOpen = true;
     }
 

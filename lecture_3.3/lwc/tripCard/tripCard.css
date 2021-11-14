@@ -1,0 +1,9 @@
+.selected {
+    border: 2px solid rgb(96, 155, 194);
+    border-radius: 5px;
+}
+
+.card-wrapper {
+    cursor: pointer;
+    padding: 5px;
+}

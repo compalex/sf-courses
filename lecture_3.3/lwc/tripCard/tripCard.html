@@ -1,6 +1,11 @@
 <template>
-    <a onclick={handleCardClicked}>
+    <div onclick={handleCardClicked} class={cardClass}>
         <h2>{record.Name}</h2>
-        <img src={imageLink.data} alt={imageLink.error} width="300" height="300"></img>
-    </a>
+        <template if:false={imageLink.data}>
+            <lightning-spinner alternative-text="Loading" size="small"></lightning-spinner>
+        </template>
+        <template if:true={imageLink.data}>
+            <img src={imageLink.data} alt={imageLink.error} width="300" height="300"></img>
+        </template>
+    </div>
 </template>

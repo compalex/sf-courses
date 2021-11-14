@@ -4,7 +4,7 @@
             <template for:each={trips} for:item="trip">
                 <li class="slds-p-horizontal_small slds-size_1-of-1 slds-medium-size_1-of-4" key={trip.Id}>
                     <article class="slds-tile slds-media slds-card__tile slds-hint-parent">
-                        <c-trip-card key={trip.Id} record={trip} record-id={trip.Id}></c-trip-card>
+                        <c-trip-card key={trip.Id} record={trip} record-id={trip.Id} selected-id></c-trip-card>
                     </article>
                 </li>
             </template>

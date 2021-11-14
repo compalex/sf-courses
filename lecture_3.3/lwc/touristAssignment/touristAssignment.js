@@ -1,19 +1,28 @@
-import { LightningElement, track } from 'lwc';
+import { LightningElement} from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
+
+import STATUS_FIELD from '@salesforce/schema/Flight__c.Status__c';
+import TOURIST_FIELD from '@salesforce/schema/Flight__c.Tourist__c';
+import TRIP_FIELD from '@salesforce/schema/Flight__c.Trip__c';
+import FLIGHT_OBJECT from '@salesforce/schema/Flight__c';
+
 import TouristsAssigned from '@salesforce/label/c.TouristsAssigned';
+import TouristAssignConfirmMsg from '@salesforce/label/c.TouristAssignConfirmMsg';
+
 import getSuitableTrips from '@salesforce/apex/TripController.getSuitableTrips';
+
+import {getErrorShowToastEvent, getSuccessShowToastEvent} from 'c/utility';
 
 export default class TouristAssignment extends LightningElement {
     touristId;
     tripId;
     trips;
-    isError=false;
     hasDetails=false;
-    errorMessage;
 
     label = {
-        TouristsAssigned
+        TouristsAssigned,
+        TouristAssignConfirmMsg
     };
 
     handleTouristSelected(evt) {
@@ -27,33 +36,42 @@ export default class TouristAssignment extends LightningElement {
     }
 
     handleBtnClick(evt) {
-        var fields = {'Tourist__c' : this.touristId, 'Trip__c' : this.tripId, 'Status__c' : 'Requested'};
-        var objRecordInput = {'apiName' : 'Flight__c', fields};    
-
-        createRecord(objRecordInput)
-        .then(response => {
-            this.dispatchEvent(
-                new ShowToastEvent({
-                    title: 'Success!',
-                    message: this.label.TouristsAssigned,
-                    variant: 'success'
-                })
-            );
-        })
-        .catch(error => {
-            alert('Error: ' + JSON.stringify(error));
-        })
+        this.showConfirmationWindow();
     }
 
     loadSuitableTrips() {
         getSuitableTrips({touristId : this.touristId})
         .then(results => {
             this.trips = results;
-            this.isError = false;
         })
         .catch(error => {
-            this.isError = true;
-            this.errorMessage = error.body.message;
+            this.dispatchEvent(getErrorShowToastEvent(error.message));
         });
+    }
+
+    showConfirmationWindow() {
+        const modal = this.template.querySelector("c-confirmation-window");
+        modal.openModalBox();
+    }
+
+    handleSubmitted() {
+        const fields = {};
+        fields[TOURIST_FIELD.fieldApiName] = this.touristId;
+        fields[TRIP_FIELD.fieldApiName] = this.tripId;
+        fields[STATUS_FIELD.fieldApiName] = 'Requested';
+
+        const objRecordInput = {apiName : FLIGHT_OBJECT.objectApiName, fields};    
+
+        createRecord(objRecordInput)
+        .then(response => {
+            this.dispatchEvent(getSuccessShowToastEvent(this.label.TouristsAssigned));
+        })
+        .catch(error => {
+            this.dispatchEvent(getErrorShowToastEvent(error.message));
+        })
+    }
+
+    get isDisabled() {
+        return !this.hasDetails;
     }
 }
