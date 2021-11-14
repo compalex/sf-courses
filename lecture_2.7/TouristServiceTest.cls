@@ -23,7 +23,6 @@ private class TouristServiceTest {
             WHERE IsDuplicate__c = true
         ];
 
-        System.assertNotEquals(null, resultTourists);
         System.assertEquals(NUM_TO_MARK, resultTourists.size());
     }
 }

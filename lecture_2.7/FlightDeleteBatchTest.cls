@@ -25,7 +25,6 @@ private class FlightDeleteBatchTest {
             WHERE Status__c LIKE :Constants.FLIGHT_STATUS_DECLINED
         ];
 
-        System.assertNotEquals(null, flightsAfterBatch);
         System.assertEquals(DECLINED_NUM_TO_CREATE, flightsBeforeBatch.size());
         System.assertEquals(true, flightsAfterBatch.isEmpty());
     }
@@ -44,7 +43,6 @@ private class FlightDeleteBatchTest {
             WHERE Id = :jobId
         ];
         
-        System.assertNotEquals(null, cronTrigger);
         System.assertEquals(CRON, cronTrigger.CronExpression);
         System.assertEquals(0, cronTrigger.TimesTriggered);
     }

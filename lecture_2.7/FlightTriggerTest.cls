@@ -57,7 +57,6 @@ private class FlightTriggerTest {
             WHERE Id = :flight.Trip__c
         ];
 
-        System.assertNotEquals(null, tripOfUpdatedFlight);
         System.assertEquals(Date.today() - 1, tripOfUpdatedFlight.Start_Date__c);
         System.assertEquals(true, exToCatch.getMessage().contains(Constants.ERROR_INVALID_START_DATE));
     }

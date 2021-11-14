@@ -12,7 +12,6 @@ private class FlightManagerTest {
         }
         List<Flight__c> flightsFromDB = FlightManager.getByTouristIds(touristIds);
 
-        System.assertNotEquals(null, flightsFromDB);
         System.assertEquals(NUM_TO_CREATE, flightsFromDB.size());
         System.assertEquals(true, flightsFromFactory.keySet().contains(flightsFromDB[0].Id));
     }

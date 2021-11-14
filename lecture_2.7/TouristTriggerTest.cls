@@ -17,7 +17,6 @@ private class TouristTriggerTest {
             WHERE IsDuplicate__c = true
         ];
 
-        System.assertNotEquals(null, resultTourists);
         System.assertEquals(DUPLICATE_NUM, resultTourists.size());
         System.assertEquals(true, resultTourists[0].IsDuplicate__c);
     }

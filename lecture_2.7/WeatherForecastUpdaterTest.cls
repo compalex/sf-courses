@@ -36,12 +36,11 @@ private class WeatherForecastUpdaterTest {
             WeatherForecastUpdater.updateForecasts();
         Test.stopTest();
 
-        List<Space_Point__c> afterUpdate = [
+        List<Space_Point__c> spacePoints = [
             SELECT Id, (SELECT Average_Temperature__c FROM Weather_Daily_Forecasts__r)
             FROM Space_Point__c
         ];
 
-        System.assertNotEquals(null, afterUpdate);
-        System.assertEquals(true, afterUpdate[0].Weather_Daily_Forecasts__r.isEmpty());
+        System.assertEquals(true, spacePoints[0].Weather_Daily_Forecasts__r.isEmpty());
     }
 }
