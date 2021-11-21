@@ -17,7 +17,7 @@ export default class tripDetails extends LightningElement {
     @wire(getWeatherForecast, {tripId: '$recordId'})
     weatherForecast({ error, data }) {
         if (data) {
-            this.todayTemp = data.Average_Temperature__c;
+            this.todayTemp = Math.round(data.Average_Temperature__c);
         } else if (error) {
            showToast(this, 'Error!', error.message, 'error');
         }
