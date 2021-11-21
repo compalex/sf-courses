@@ -1,17 +1,14 @@
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
-export function getErrorShowToastEvent(message) {
-    return new ShowToastEvent({
-        title: 'Error!',
+const showToast = (cmp, title, message, variant) => {
+    const event = new ShowToastEvent({
+        title: title,
         message: message,
-        variant: 'error'
+        variant: variant
     });
+    cmp.dispatchEvent(event);
 }
 
-export function getSuccessShowToastEvent(message) {
-    return new ShowToastEvent({
-        title: 'Success!',
-        message: message,
-        variant: 'success'
-    });
-}
+export {
+    showToast
+};

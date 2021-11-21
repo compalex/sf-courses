@@ -6,6 +6,8 @@
                     <lightning-output-field field-name="Name"></lightning-output-field>
                     <lightning-output-field field-name="Start_Date__c"></lightning-output-field>
                     <lightning-output-field field-name="Seats__c"></lightning-output-field>
+                    <p class="slds-text-color_weak slds-p-left_xx-small">Temperature today:</p>
+                    <p class="slds-p-left_xx-small">{todayTemp} ℃</p>
                 </div>
             </lightning-record-view-form>
             <lightning-map map-markers={mapMarkers} zoom-level={zoomLevel}></lightning-map>

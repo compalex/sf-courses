@@ -71,7 +71,12 @@ public class TouristManager {
         return tourists.isEmpty() ? null : (List<Tourist__c>) tourists[0];
     }
 
-    public static List<Tourist__c> getByActiveAndExcludeTripAndAge(Id excludeTripId, Decimal minAge) {
+    public static List<Tourist__c> getByActiveAndExcludeTripAndAge(
+        Id excludeTripId, 
+        Decimal minAge, 
+        Integer limitSize, 
+        Integer offset
+    ) {
         if(String.isBlank(excludeTripId) || minAge == null) {
             return new List<Tourist__c>();
         }
@@ -85,6 +90,9 @@ public class TouristManager {
                 WHERE Trip__c = :excludeTripId
             ) AND Age__c >= :minAge
             AND Active__c = True
+            ORDER BY CreatedDate
+            LIMIT :limitSize
+            OFFSET :offset
         ];
     }
 }

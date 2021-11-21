@@ -1,5 +1,5 @@
-import { LightningElement, api, wire } from 'lwc';
-import { getRecord } from 'lightning/uiRecordApi';
+import { LightningElement, api, wire, track } from 'lwc';
+import { getRecord, getRecordNotifyChange } from 'lightning/uiRecordApi';
 import { refreshApex } from '@salesforce/apex';
 
 import NotEnoughSeats from '@salesforce/label/c.NotEnoughSeats';
@@ -7,31 +7,20 @@ import NoTouristsSelected from '@salesforce/label/c.NoTouristsSelected';
 import TripAssignmentTitle from '@salesforce/label/c.TripAssignmentTitle';
 import TripAssignConfirmMsg from '@salesforce/label/c.TripAssignConfirmMsg';
 import TouristsAssigned from '@salesforce/label/c.TouristsAssigned';
+import AddToTrip from '@salesforce/label/c.AddToTrip';
+import NoSuitableTourists from '@salesforce/label/c.NoSuitableTourists';
 
 import AVAILABLE_SEATS_FIELD from '@salesforce/schema/Trip__c.Available_seats__c';
-import NAME_FIELD from '@salesforce/schema/Tourist__c.Name';
-import EMAIL_FIELD from '@salesforce/schema/Tourist__c.Email__c';
-import GENDER_FIELD from '@salesforce/schema/Tourist__c.Gender__c';
 
-import getSuitableTourists from '@salesforce/apex/TripController.getSuitableTourists';
 import insertFlights from '@salesforce/apex/TripController.insertFlights';
 
-import {getErrorShowToastEvent, getSuccessShowToastEvent} from 'c/utility';
-
-const COLUMNS = [
-    { label: 'Tourist Name', fieldName: NAME_FIELD.fieldApiName, type: 'text' },
-    { label: 'Email', fieldName: EMAIL_FIELD.fieldApiName, type: 'email' },
-    { label: 'Gender', fieldName: GENDER_FIELD.fieldApiName, type: 'text' }
-];
+import { showToast } from 'c/utility';
 
 export default class TouristRegistrator extends LightningElement {
     @api recordId;
+    @api tourists;
 
     isLoading = false;
-    columns = COLUMNS;
-
-    @wire(getSuitableTourists, {tripId: '$recordId'}) 
-    tourists;
 
     @wire(getRecord, {recordId: '$recordId', fields: [AVAILABLE_SEATS_FIELD]})
     trip;
@@ -41,39 +30,37 @@ export default class TouristRegistrator extends LightningElement {
         NoTouristsSelected,
         TripAssignmentTitle,
         TripAssignConfirmMsg,
-        TouristsAssigned
+        TouristsAssigned,
+        AddToTrip,
+        NoSuitableTourists
     };
 
     handleBtnClick(event) {
-        let rowsNum = this.template.querySelector('lightning-datatable').getSelectedRows().length;
+        let rowsNum = this.template.querySelector('c-lazy-datatable').selectedRows.length;
 
         if(!rowsNum) {
-            this.dispatchEvent(getErrorShowToastEvent(this.label.NoTouristsSelected));
+            showToast(this, 'Error!', this.label.NoTouristsSelected, 'error');
         } else if(this.trip.data.fields.Available_seats__c.value >= rowsNum) {
             this.showConfirmationWindow();
         } else {
-            this.dispatchEvent(getErrorShowToastEvent(this.label.NotEnoughSeats));
+            showToast(this, 'Error!', this.label.NotEnoughSeats, 'error');
         }
     }
 
     handleSubmitted() {
         this.isLoading = true;
-        let selectedRows = this.template.querySelector('lightning-datatable').getSelectedRows();
-        let touristsToAssign = [];
+        let selectedRows = this.template.querySelector('c-lazy-datatable').selectedRows;
+        let touristIds = selectedRows.map(tourist => tourist.Id);
 
-        selectedRows.forEach(tourist => { 
-            touristsToAssign.push(tourist.Id);
-        });     
-
-        insertFlights({touristIds: touristsToAssign, tripId: this.recordId})
+        insertFlights({touristIds: touristIds, tripId: this.recordId})
         .then(result => {       
-            refreshApex(this.tourists);
+            getRecordNotifyChange([{recordId: this.recordId}]);
             this.isLoading = false;
-            this.dispatchEvent(getSuccessShowToastEvent(this.label.TouristsAssigned));
+            showToast(this, 'Success!', this.label.TouristsAssigned, 'success');
         })
         .catch(error=> {
             this.isLoading = false;
-            this.dispatchEvent(getErrorShowToastEvent(error.message));
+            showToast(this, 'Error!', error.message, 'error');
         });
     }
 

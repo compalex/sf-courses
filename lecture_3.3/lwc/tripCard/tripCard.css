@@ -7,3 +7,10 @@
     cursor: pointer;
     padding: 5px;
 }
+
+img {
+    width:  130px;
+    height: 130px;
+    object-fit: cover;
+    border-radius: 5px;
+}

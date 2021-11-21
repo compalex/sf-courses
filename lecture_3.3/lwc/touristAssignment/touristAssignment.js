@@ -1,5 +1,4 @@
 import { LightningElement} from 'lwc';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { createRecord } from 'lightning/uiRecordApi';
 
 import STATUS_FIELD from '@salesforce/schema/Flight__c.Status__c';
@@ -7,45 +6,57 @@ import TOURIST_FIELD from '@salesforce/schema/Flight__c.Tourist__c';
 import TRIP_FIELD from '@salesforce/schema/Flight__c.Trip__c';
 import FLIGHT_OBJECT from '@salesforce/schema/Flight__c';
 
+import TripTitle from '@salesforce/label/c.TripTitle';
 import TouristsAssigned from '@salesforce/label/c.TouristsAssigned';
 import TouristAssignConfirmMsg from '@salesforce/label/c.TouristAssignConfirmMsg';
 
 import getSuitableTrips from '@salesforce/apex/TripController.getSuitableTrips';
 
-import {getErrorShowToastEvent, getSuccessShowToastEvent} from 'c/utility';
+import { showToast } from 'c/utility';
 
 export default class TouristAssignment extends LightningElement {
     touristId;
     tripId;
     trips;
+    isLoading = false;
     hasDetails=false;
 
     label = {
+        TripTitle,
         TouristsAssigned,
         TouristAssignConfirmMsg
     };
 
-    handleTouristSelected(evt) {
-        this.touristId = evt.detail;
+    handleTouristSelected(event) {
+        this.touristId = event.detail;
+        this.hasDetails = false;
         this.loadSuitableTrips();
     }
 
-    handleCardClicked(evt) {
-        this.tripId = evt.detail;
+    handleCardClicked(event) {
+        this.tripId = event.detail;
         this.hasDetails = true;
     }
 
-    handleBtnClick(evt) {
+    handleBtnClick(event) {
         this.showConfirmationWindow();
     }
 
     loadSuitableTrips() {
+        if(!this.touristId) {
+            return;
+        }
+
+        this.isLoading = true;
+
         getSuitableTrips({touristId : this.touristId})
         .then(results => {
+            this.isLoading = false;
             this.trips = results;
         })
         .catch(error => {
-            this.dispatchEvent(getErrorShowToastEvent(error.message));
+            this.isLoading = false;
+            showToast(this, 'Error!', error.message, 'error');
         });
     }
 
@@ -55,6 +66,8 @@ export default class TouristAssignment extends LightningElement {
     }
 
     handleSubmitted() {
+        this.isLoading = true;
+
         const fields = {};
         fields[TOURIST_FIELD.fieldApiName] = this.touristId;
         fields[TRIP_FIELD.fieldApiName] = this.tripId;
@@ -64,10 +77,12 @@ export default class TouristAssignment extends LightningElement {
 
         createRecord(objRecordInput)
         .then(response => {
-            this.dispatchEvent(getSuccessShowToastEvent(this.label.TouristsAssigned));
+            this.isLoading = false;
+            showToast(this, 'Success!', this.label.TouristsAssigned, 'success');
         })
         .catch(error => {
-            this.dispatchEvent(getErrorShowToastEvent(error.message));
+            this.isLoading = false;
+            showToast(this, 'Error!', error.message, 'error');
         })
     }
 

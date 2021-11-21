@@ -1,47 +1,25 @@
 <template>
     <template if:true={trip.data}>
-        <lightning-card>
-            <h3 slot="title">
-                <lightning-icon 
-                    icon-name="custom:custom15" 
-                    size="small" 
-                    class="slds-m-right_x-small">
-                </lightning-icon>
-                {label.TripAssignmentTitle}
-            </h3>
+        <lightning-card title={label.TripAssignmentTitle} icon-name="custom:custom15">
             <lightning-button 
-                label="Add to Trip" 
+                label={label.AddToTrip}
                 onclick={handleBtnClick}
                 disabled={isDisabled}
                 slot="actions"> 
             </lightning-button>
-            <template if:true={tourists.data}>
-                <div class="spinner">
-                    <template if:true={isLoading}>
-                        <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
-                    </template>
-                </div>
-                <template if:true={hasAvailableSeats}>  
-                    <div class="slds-p-horizontal_small">
-                        <lightning-datatable 
-                            key-field="Id" 
-                            data={tourists.data} 
-                            columns={columns}
-                            class="slds-m-top_x-small">
-                        </lightning-datatable>
-                    </div>
-                    <c-confirmation-window 
-                        message={label.TripAssignConfirmMsg} 
-                        onsubmitted={handleSubmitted}> 
-                    </c-confirmation-window>
-                </template>
-                <template if:false={hasAvailableSeats}>
-                    <p class="slds-align_absolute-center">{label.NotEnoughSeats}</p>
-                </template>
+            <template if:true={hasAvailableSeats}>  
+                <c-lazy-datatable trip-id={recordId}></c-lazy-datatable>
             </template>
-            <template if:false={tourists.data}>
-                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            <template if:false={hasAvailableSeats}>
+                <p class="slds-align_absolute-center">{label.NotEnoughSeats}</p>
+            </template>
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
             </template>
         </lightning-card>
     </template>
+    <c-confirmation-window 
+        message={label.TripAssignConfirmMsg} 
+        onsubmitted={handleSubmitted}> 
+    </c-confirmation-window>
 </template>

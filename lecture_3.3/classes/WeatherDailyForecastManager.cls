@@ -9,6 +9,7 @@ public with sharing class WeatherDailyForecastManager {
             SELECT Average_Temperature__c, Date__c
             FROM Weather_Daily_Forecast__c
             WHERE Space_Point__c = :spacePointId
+            AND Date__c = TODAY
         ];
     }
 }

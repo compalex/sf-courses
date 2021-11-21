@@ -1,0 +1,35 @@
+public class Constants {
+    public static final String WEATHER_API_DATA = 'data';
+    public static final String WEATHER_API_DATE = 'valid_date';
+    public static final String WEATHER_API_TEMP = 'temp';
+    public static final String WEATHER_API_URI = 'callout:Weatherbit';
+    public static final String WEATHER_API_LAT = '?lat=';
+    public static final String WEATHER_API_LON = '&lon=';
+    public static final String WEATHER_API_KEY = '&key=b57c899602274160bb5b8e1f1c754dc4';
+    public static final String WEATHER_FORECAST_EXCEPTION_MSG = 'Something went wrong with the response! ';
+    public static final String HTTP_REQUEST_METHOD_GET = 'GET';
+    public static final String SPLIT_SYMBOL = ',';
+    public static final String ERROR_INVALID_AGE = 'Invalid age!';
+    public static final String ERROR_INVALID_START_DATE = 'Invalid start date!';
+    public static final String FLIGHT_STATUS_DECLINED = 'Declined';
+    public static final String FLIGHT_STATUS_ACCEPTED = 'Accepted';
+    public static final String FLIGHT_STATUS_OFFER_PENDING = 'Offer Pending';
+    public static final String CUSTOM_MDT_TYPES_EMAIL_RECORD = 'Declined_Flights_Email';
+    public static final String EMAIL_HTML_HEADER = 'Flights have been deleted for the following tourists:';
+    public static final String EMAIL_SUBJECT = 'Flight have been deleted!';
+    public static final String EMAIL_SENDER_NAME = 'SFDC courses inc.';
+    public static final String EMAIL_TOURIST_ID = '<br>TouristId: ';
+    public static final String EMAIL_TOURIST_NUMBER = ', number of Flights deleted: ';
+    public static final String ERROR_DUPLICATE_EXISTS = 'Error! There is a duplicate in DB';
+    public static final String ERROR_MSG_EMPTY_NAME = 'The name must be not empty';
+    public static final String ERROR_MSG_EMPTY_EMAIL = 'The email should be not empty';
+    public static final String ERROR_MSG_INVALID_AGE = 'The age must be a number';
+    public static final String ERROR_MSG_500 = 'Internal Server Error!';
+    public static final String RESPONSE_SUCCESS = 'OK';
+    public static final String NO_TRIP_ID_ERROR = 'There is no trip id!';
+    public static final Integer DAYS_IN_YEAR = 365;
+    public static final Integer STATUS_CODE_200 = 200;
+    public static final Integer STATUS_CODE_404 = 404;
+    public static final Integer STATUS_CODE_409 = 409;
+    public static final Integer STATUS_CODE_500 = 500;
+}

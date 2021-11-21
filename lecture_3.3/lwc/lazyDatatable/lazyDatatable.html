@@ -1,0 +1,17 @@
+<template>
+    <template if:true={tourists}>
+        <div class="slds-p-horizontal_small" style="height:325px">
+            <lightning-datatable 
+                key-field="Id" 
+                data={tourists} 
+                columns={columns}
+                enable-infinite-loading
+                onloadmore={loadMoreData}
+                class="slds-m-top_x-small">
+            </lightning-datatable>
+        </div>
+    </template>
+    <template if:false={tourists}>
+        <p class="slds-align_absolute-center">{label.NoSuitableTourists}</p>
+    </template>
+</template>
