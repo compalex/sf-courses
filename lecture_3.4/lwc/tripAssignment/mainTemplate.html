@@ -1,0 +1,26 @@
+<template>
+    <lightning-quick-action-panel header={label.TripAssignmentTitle}>
+        <c-tourist-registrator 
+            record-id={recordId}
+            table-data={tableData}
+            onselected={switchTemplate}
+            class="slds-p-top_small">
+        </c-tourist-registrator>
+        <div slot="footer">
+            <lightning-button 
+                variant="neutral" 
+                label="Cancel"
+                onclick={closeScreen}>
+            </lightning-button>
+            <lightning-button 
+                variant="brand" 
+                class="slds-m-left_small" 
+                label={label.AddToTrip}
+                onclick={handleSubmitButton}>
+            </lightning-button>
+        </div>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
+        </template>
+    </lightning-quick-action-panel>
+</template>

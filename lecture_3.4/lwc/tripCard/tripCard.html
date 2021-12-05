@@ -1,0 +1,8 @@
+<template>
+    <div onclick={handleCardClicked} class={cardClass}>
+        <h2 class="slds-text-heading_medium slds-align_absolute-center">{record.Name}</h2>
+        <template if:true={imageLink.data}>
+            <img src={imageLink.data} alt={imageLink.error}></img>
+        </template>
+    </div>
+</template>

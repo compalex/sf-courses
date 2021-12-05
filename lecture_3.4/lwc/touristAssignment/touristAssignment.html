@@ -1,0 +1,35 @@
+<template>
+    <div class="slds-grid slds-wrap salesforce-background">
+        <div class="slds-size_2-of-3 slds-p-right_x-small">
+            <template if:true={trips}>
+                <div class="slds-wrap">
+                    <lightning-card title={label.TripTitle} icon-name="custom:custom20">
+                        <lightning-button 
+                            label="Submit" 
+                            onclick={handleBtnClick} 
+                            slot="actions"
+                            disabled={isDisabled}>
+                        </lightning-button>
+                        <c-trip-card-list 
+                            trips={trips.data} 
+                            selected-card={tripId} 
+                            onclicked={handleCardClicked}>
+                        </c-trip-card-list>
+                    </lightning-card>
+                </div>
+            </template>
+        </div>
+        <div class="slds-size_1-of-3">
+            <template if:true={hasDetails}>
+                <c-trip-details record-id={tripId}></c-trip-details>
+            </template>
+        </div>  
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
+        </template>
+    </div>
+    <c-confirmation-window 
+        message={label.TouristAssignConfirmMsg} 
+        onsubmitted={handleSubmitted}> 
+    </c-confirmation-window>
+</template>

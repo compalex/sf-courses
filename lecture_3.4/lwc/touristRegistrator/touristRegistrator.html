@@ -1,0 +1,16 @@
+<template>
+    <template if:true={trip.data}>
+        <template if:true={hasAvailableSeats}>  
+            <c-lazy-datatable 
+                trip-id={recordId} 
+                table-data={tableData}>
+            </c-lazy-datatable>
+        </template>
+        <template if:false={hasAvailableSeats}>
+            <p class="slds-align_absolute-center">{label.NotEnoughSeats}</p>
+        </template>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
+        </template>
+    </template>
+</template>
