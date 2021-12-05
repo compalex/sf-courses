@@ -83,9 +83,11 @@ export default class LazyDatatable extends LightningElement {
 
     @api
     getTableData() {
+        let tableTemplate = this.template.querySelector('lightning-datatable');
+
         return {
-            data: this.template.querySelector('lightning-datatable').data,
-            selectedRows: this.template.querySelector('lightning-datatable').getSelectedRows(),
+            data: tableTemplate.data,
+            selectedRows: tableTemplate.getSelectedRows(),
             rowOffset: this.rowOffSet   
         }
     }
