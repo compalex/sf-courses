@@ -51,8 +51,8 @@ export default class LazyDatatable extends LightningElement {
         }
     }
 
-    async loadData() {
-        await getSuitableTouristsCacheable({tripId: this.tripId, limitSize: this.rowLimit, offset: this.rowOffSet})
+    loadData() {
+        return getSuitableTouristsCacheable({tripId: this.tripId, limitSize: this.rowLimit, offset: this.rowOffSet})
             .then(result => {
                 if (result.length <= this.rowLimit) {
                     this.template.querySelector('lightning-datatable').removeAttribute('enableInfiniteLoading');
@@ -73,11 +73,8 @@ export default class LazyDatatable extends LightningElement {
     async loadMoreData(event) {
         const target = event.target;
         target.isLoading = true;
-
         this.rowOffSet = this.rowOffSet + this.rowLimit;
-
         await this.loadData();
-        
         target.isLoading = false;
     }
 
@@ -87,7 +84,7 @@ export default class LazyDatatable extends LightningElement {
 
         return {
             data: tableTemplate.data,
-            selectedRows: tableTemplate.getSelectedRows(),
+            selectedRows: tableTemplate.getSelectedRows().map(tourist => tourist.Id),
             rowOffset: this.rowOffSet   
         }
     }

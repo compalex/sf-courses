@@ -11,13 +11,10 @@ public inherited sharing class TripController {
         List<Tourist__c> tourists = TouristManager.getByIds(new Set<Id>{touristId});
         List<Trip__c> trips;
 
-        if(!tourists.isEmpty()) {
-            trips = TripManager.getByExcludeTouristsAndAge(
-                new Set<Id>{touristId},
-                tourists[0].Age__c
-            );
-        } else {
+        if(tourists.isEmpty()) {
             trips = new List<Trip__c>();
+        } else {
+            trips = TripManager.getByExcludeTouristsAndAge(new Set<Id>{touristId}, tourists[0].Age__c);
         }
 
         return trips;
@@ -33,12 +30,7 @@ public inherited sharing class TripController {
         List<Tourist__c> tourists;
 
         if(!trips.isEmpty()) {
-            tourists = TouristManager.getByActiveAndExcludeTripAndAge(
-                tripId,
-                trips[0].Minimum_Age__c,
-                limitSize,
-                offset
-            );
+            tourists = TouristManager.getByActiveAndExcludeTripAndAge(tripId, trips[0].Minimum_Age__c, limitSize, offset);
         } else {
             tourists = new List<Tourist__c>();
         }
@@ -56,8 +48,9 @@ public inherited sharing class TripController {
         String imgLink;
 
         if(!contentDocLinks.isEmpty()) {
-            imgLink = BASE_URL + DOC_URL + contentDocLinks[0].ContentDocumentId;
+            imgLink = (BASE_URL + DOC_URL + contentDocLinks[0].ContentDocumentId);
         }
+
         return imgLink;
     }
 
@@ -75,48 +68,19 @@ public inherited sharing class TripController {
             forecasts = WeatherDailyForecastManager.getBySpacePointId(spacePointId);
         }
 
-        return !forecasts.isEmpty() ? forecasts[0] : null; 
+        return forecasts.isEmpty() ? null : forecasts[0]; 
     }
 
     @AuraEnabled
-    public static List<Flight__c> insertFlights(List<Id> touristIds, Id tripId) {
+    public static void insertFlights(List<Id> touristIds, Id tripId) {
         if(tripId == null || touristIds == null || touristIds.isEmpty()) {
-            return new List<Flight__c>();
-        }
-
-        List<Flight__c> flights = new List<Flight__c>();
-
-        for(Id touristId : touristIds) {
-            FLight__c flight = new Flight__c(
-                Tourist__c = touristId,
-                Trip__c = tripId,
-                Status__c = Constants.FLIGHT_STATUS_OFFER_PENDING
-            );
-            flights.add(flight);
-        }
-
-        try {
-            insert flights;
-        } catch(Exception ex) {
-            throw new AuraHandledException(ex.getMessage());
-        }
-        
-        return flights;
-    }
-
-    @AuraEnabled(cacheable=true)
-    public static void sendEmailOffer(String subject, String body, String toAddress) {
-        if(String.isBlank(subject) || String.isBlank(body) || String.isBlank(toAddress)) {
             throw new AuraHandledException(Label.ServerError);
         }
 
         try {
-            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
-            mail.setToAddresses(new List<String>{toAddress});
-            mail.setSubject(subject);
-            mail.setHtmlBody(body);
-            Messaging.sendEmail(new List<Messaging.SingleEmailMessage>{mail});
-        } catch (Exception ex) {
+            TripService.insertFlights(touristIds, tripId);
+        } catch(Exception ex) {
+            TripService.logError(ex);
             throw new AuraHandledException(ex.getMessage());
         }
     }

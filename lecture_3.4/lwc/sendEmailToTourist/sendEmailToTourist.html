@@ -4,13 +4,13 @@
         <div slot="footer">
             <lightning-button 
                 variant="neutral" 
-                label="Cancel"
+                label={label.CancelLabel}
                 onclick={closeAction}>
             </lightning-button>
             <lightning-button 
                 variant="brand" 
                 class="slds-m-left_small" 
-                label="OK"
+                label={label.OkLabel}
                 onclick={handleConfirm}>
             </lightning-button>
         </div>

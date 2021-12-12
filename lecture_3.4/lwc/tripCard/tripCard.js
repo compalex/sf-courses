@@ -1,26 +1,35 @@
-import { LightningElement, api , wire } from 'lwc';
+import { LightningElement, api, wire } from 'lwc';
+import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
+import NAME_FIELD from '@salesforce/schema/Trip__c.Name';
 import getImageLink from '@salesforce/apex/TripController.getImageLink';
 
 const CARD_WRAPPER_SELECTED_CLASS = 'card-wrapper selected';
 const CARD_WRAPPER_UNSELECTED_CLASS = 'card-wrapper';
 
 export default class TripCard extends LightningElement {
-    @api record;
-    @api recordId;
-    @api selectedId;
+    @api tripId;
+    @api selectedTripId;
 
-    @wire (getImageLink, {tripId : '$recordId'}) 
+    @wire (getImageLink, {tripId : '$tripId'}) 
     imageLink;
 
+    @wire (getRecord, {recordId: '$tripId', fields: [NAME_FIELD]})
+    trip;
+
     handleCardClicked(evt) {
-        this.selectedId = this.recordId;
+        this.selectedTripId = this.tripId;
         const cardClickedEvent = new CustomEvent(
-            'clicked', 
-            {bubbles : true, detail: this.recordId, composed : true});  
+            'selected', 
+            {bubbles : true, detail: this.tripId, composed : true}
+        );  
         this.dispatchEvent(cardClickedEvent);
     }
     
     get cardClass() {
-        return (this.recordId === this.selectedId) ? CARD_WRAPPER_SELECTED_CLASS : CARD_WRAPPER_UNSELECTED_CLASS;
+        return (this.tripId === this.selectedTripId) ? CARD_WRAPPER_SELECTED_CLASS : CARD_WRAPPER_UNSELECTED_CLASS;
+    }
+
+    get name() {
+        return getFieldValue(this.trip.data, NAME_FIELD);
     }
 }

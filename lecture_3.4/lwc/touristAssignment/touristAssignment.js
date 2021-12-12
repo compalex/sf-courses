@@ -10,51 +10,46 @@ import FLIGHT_OBJECT from '@salesforce/schema/Flight__c';
 import TripTitle from '@salesforce/label/c.TripTitle';
 import TouristsAssigned from '@salesforce/label/c.TouristsAssigned';
 import TouristAssignConfirmMsg from '@salesforce/label/c.TouristAssignConfirmMsg';
+import PickATripMsg from '@salesforce/label/c.PickATripMsg';
 
 import getSuitableTrips from '@salesforce/apex/TripController.getSuitableTrips';
 
-import { showToast } from 'c/utility';
+import { showToast, getUrlParamValue } from 'c/utility';
 
 export default class TouristAssignment extends LightningElement {
     touristId;
     tripId;
+    isSelected = false;
     isLoading = false;
-    hasDetail = false;
 
     label = {
         TripTitle,
         TouristsAssigned,
-        TouristAssignConfirmMsg
-    };
+        TouristAssignConfirmMsg,
+        PickATripMsg
+    }
 
     @wire(getSuitableTrips, {touristId : '$touristId'})
     trips;
 
     connectedCallback() {
-        const param = 'touristId';
-        this.touristId = this.getUrlParamValue(window.location.href, param);
-        this.hasDetails = false;
-    }
-    
-    getUrlParamValue(url, key) {
-        return new URL(url).searchParams.get(key);
+        this.touristId = getUrlParamValue('touristId');
     }
 
-    handleCardClicked(event) {
+    handleTripSelect(event) {
         this.tripId = event.detail;
-        this.hasDetails = true;
+        this.isSelected = true;
     }
 
-    handleBtnClick(event) {
-        this.showConfirmationWindow();
+    handleSubmitButton(event) {
+        if(this.isSelected) {
+            this.template.querySelector('c-confirmation-window').openModalBox();
+        } else {
+            showToast(this, 'Error!', this.label.PickATripMsg, 'error');
+        }
     }
 
-    showConfirmationWindow() {
-        const modal = this.template.querySelector("c-confirmation-window");
-        modal.openModalBox();
-    }
-
-    handleSubmitted() {
+    handleConfirmed() {
         this.isLoading = true;
 
         const fields = {};
@@ -62,24 +57,20 @@ export default class TouristAssignment extends LightningElement {
         fields[TRIP_FIELD.fieldApiName] = this.tripId;
         fields[STATUS_FIELD.fieldApiName] = 'Requested';
 
-        const objRecordInput = {apiName : FLIGHT_OBJECT.objectApiName, fields};    
+        const objRecordInput = {apiName : FLIGHT_OBJECT.objectApiName, fields};  
 
         createRecord(objRecordInput)
             .then(() => {
                 refreshApex(this.trips);
-                this.hasDetails = false;
+                this.tripId = null;
+                this.isSelected = false;
                 showToast(this, 'Success!', this.label.TouristsAssigned, 'success');
             })
             .catch(error => {
-                
                 showToast(this, 'Error!', error.body.message, 'error');
             })
             .finally(() => {
                 this.isLoading = false;
             });
-    }
-
-    get isDisabled() {
-        return !this.hasDetails;
     }
 }

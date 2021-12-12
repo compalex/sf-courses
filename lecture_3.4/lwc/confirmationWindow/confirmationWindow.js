@@ -1,11 +1,18 @@
 import { LightningElement, api } from 'lwc';
+
 import ConfirmationWindowHeader from '@salesforce/label/c.ConfirmationWindowHeader';
+import OkLabel from '@salesforce/label/c.OkLabel';
+import CancelLabel from '@salesforce/label/c.CancelLabel';
 
 export default class ConfirmationWindow extends LightningElement {
-    headerTxt = ConfirmationWindowHeader;
-
     @api isModalBoxOpen = false;
     @api message;
+
+    label = {
+        ConfirmationWindowHeader,
+        OkLabel,
+        CancelLabel
+    };
 
     @api 
     openModalBox() {
@@ -17,7 +24,7 @@ export default class ConfirmationWindow extends LightningElement {
     }
 
     submitModalBox() { 
-        this.dispatchEvent(new CustomEvent('submitted'));
+        this.dispatchEvent(new CustomEvent('confirmed'));
         this.isModalBoxOpen = false;
     }
 }

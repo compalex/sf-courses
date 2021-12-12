@@ -2,12 +2,14 @@ import { LightningElement, api, wire } from 'lwc';
 import { getRecord } from 'lightning/uiRecordApi';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import { showToast } from 'c/utility';
-import sendEmailOffer from '@salesforce/apex/TripController.sendEmailOffer';
+import sendEmailOffer from '@salesforce/apex/SendOfferController.sendEmailOffer';
 import EMAIL_FIELD from '@salesforce/schema/Tourist__c.Email__c';
 
 import EmailSent from '@salesforce/label/c.EmailSent';
 import EmailConfirmationMsg from '@salesforce/label/c.EmailConfirmationMsg';
 import ConfirmationWindowHeader from '@salesforce/label/c.ConfirmationWindowHeader';
+import OkLabel from '@salesforce/label/c.OkLabel';
+import CancelLabel from '@salesforce/label/c.CancelLabel';
 
 export default class SendEmailToTourist extends LightningElement {
     @api recordId;
@@ -15,7 +17,9 @@ export default class SendEmailToTourist extends LightningElement {
     label = {
         EmailSent,
         EmailConfirmationMsg,
-        ConfirmationWindowHeader
+        ConfirmationWindowHeader,
+        OkLabel,
+        CancelLabel
     };
 
     @wire(getRecord, {recordId: '$recordId', fields: [EMAIL_FIELD]})

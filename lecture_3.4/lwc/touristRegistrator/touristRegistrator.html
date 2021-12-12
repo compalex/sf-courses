@@ -2,7 +2,7 @@
     <template if:true={trip.data}>
         <template if:true={hasAvailableSeats}>  
             <c-lazy-datatable 
-                trip-id={recordId} 
+                trip-id={tripId} 
                 table-data={tableData}>
             </c-lazy-datatable>
         </template>

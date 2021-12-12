@@ -9,6 +9,11 @@ const showToast = (cmp, title, message, variant) => {
     cmp.dispatchEvent(event);
 }
 
+const getUrlParamValue = (key) => {
+    return new URL(window.location.href).searchParams.get(key);
+}
+
 export {
-    showToast
+    showToast,
+    getUrlParamValue
 }

@@ -1,15 +1,14 @@
 <template>
     <lightning-quick-action-panel header={label.TripAssignmentTitle}>
         <c-tourist-registrator 
-            record-id={recordId}
+            trip-id={recordId}
             table-data={tableData}
-            onselected={switchTemplate}
             class="slds-p-top_small">
         </c-tourist-registrator>
         <div slot="footer">
             <lightning-button 
                 variant="neutral" 
-                label="Cancel"
+                label={label.CancelLabel}
                 onclick={closeScreen}>
             </lightning-button>
             <lightning-button 

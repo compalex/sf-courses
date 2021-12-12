@@ -3,27 +3,35 @@ import { getRecord, getFieldValue } from 'lightning/uiRecordApi';
 import { showToast } from 'c/utility';
 import getWeatherForecast from '@salesforce/apex/TripController.getWeatherDailyForecast';
 
+import TripDetailsTitle from '@salesforce/label/c.TripDetailsTitle';
+import Temperature from '@salesforce/label/c.Temperature';
+
 import LATITUDE_FIELD from '@salesforce/schema/Trip__c.Latitude__c';
 import LONGITUDE_FIELD from '@salesforce/schema/Trip__c.Longitude__c';
 
 export default class tripDetails extends LightningElement {
-    @api recordId;
+    @api tripId;
 
     todayTemp;
+    zoomLevel = 10;
 
-    @wire (getRecord, {recordId: '$recordId', fields: [LATITUDE_FIELD, LONGITUDE_FIELD]})
+    label = {
+        TripDetailsTitle,
+        Temperature
+    }
+
+    @wire (getRecord, {recordId: '$tripId', fields: [LATITUDE_FIELD, LONGITUDE_FIELD]})
     trip;
 
-    @wire(getWeatherForecast, {tripId: '$recordId'})
+    @wire(getWeatherForecast, {tripId: '$tripId'})
     weatherForecast({ error, data }) {
         if (data) {
             this.todayTemp = Math.round(data.Average_Temperature__c);
         } else if (error) {
-           showToast(this, 'Error!', error.message, 'error');
+            this.todayTemp = undefined;
+            showToast(this, 'Error!', error.message, 'error');
         }
     }
-
-    zoomLevel = 10;
     
     get mapMarkers() {
         return [

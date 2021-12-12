@@ -1,21 +1,23 @@
 <template>
-    <lightning-quick-action-panel header={label.ConfirmationWindowHeader}>
-        <p class="slds-align_absolute-center slds-p-around_medium">{label.TripAssignConfirmMsg}</p>
-        <div slot="footer">
-            <lightning-button 
-                variant="neutral" 
-                label="Cancel"
-                onclick={switchTemplate}>
-            </lightning-button>
-            <lightning-button 
-                variant="brand" 
-                class="slds-m-left_small" 
-                label="OK"
-                onclick={handleConfirm}>
-            </lightning-button>
-        </div>
-    </lightning-quick-action-panel>
-    <template if:true={isLoading}>
-        <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
-    </template>
+    <div class="slds-is-relative">
+        <lightning-quick-action-panel header={label.ConfirmationWindowHeader}>
+            <p class="slds-align_absolute-center slds-p-around_medium">{label.TripAssignConfirmMsg}</p>
+            <div slot="footer">
+                <lightning-button 
+                    variant="neutral" 
+                    label={label.CancelLabel}
+                    onclick={switchTemplate}>
+                </lightning-button>
+                <lightning-button 
+                    variant="brand" 
+                    class="slds-m-left_small" 
+                    label={label.OkLabel}
+                    onclick={handleConfirm}>
+                </lightning-button>
+            </div>
+        </lightning-quick-action-panel>
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" variant="brand" size="large"></lightning-spinner>
+        </template>
+    </div>
 </template>
