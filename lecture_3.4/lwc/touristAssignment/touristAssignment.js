@@ -11,6 +11,7 @@ import TripTitle from '@salesforce/label/c.TripTitle';
 import TouristsAssigned from '@salesforce/label/c.TouristsAssigned';
 import TouristAssignConfirmMsg from '@salesforce/label/c.TouristAssignConfirmMsg';
 import PickATripMsg from '@salesforce/label/c.PickATripMsg';
+import PickTripTitle from '@salesforce/label/c.PickTripTitle';
 
 import getSuitableTrips from '@salesforce/apex/TripController.getSuitableTrips';
 
@@ -26,7 +27,8 @@ export default class TouristAssignment extends LightningElement {
         TripTitle,
         TouristsAssigned,
         TouristAssignConfirmMsg,
-        PickATripMsg
+        PickATripMsg,
+        PickTripTitle
     }
 
     @wire(getSuitableTrips, {touristId : '$touristId'})
