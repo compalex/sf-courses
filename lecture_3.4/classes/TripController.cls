@@ -29,10 +29,10 @@ public inherited sharing class TripController {
         List<Trip__c> trips = TripManager.getByIds(new Set<Id>{tripId});
         List<Tourist__c> tourists;
 
-        if(!trips.isEmpty()) {
-            tourists = TouristManager.getByActiveAndExcludeTripAndAge(tripId, trips[0].Minimum_Age__c, limitSize, offset);
-        } else {
+        if(trips.isEmpty()) {
             tourists = new List<Tourist__c>();
+        } else {
+            tourists = TouristManager.getByActiveAndExcludeTripAndAge(tripId, trips[0].Minimum_Age__c, limitSize, offset);
         }
 
         return tourists;
@@ -47,7 +47,9 @@ public inherited sharing class TripController {
         List<ContentDocumentLink> contentDocLinks = ContentDocumentLinkManager.getByTripId(tripId);
         String imgLink;
 
-        if(!contentDocLinks.isEmpty()) {
+        if(contentDocLinks.isEmpty()) {
+            throw new AuraHandledException(Label.ServerError);
+        } else {
             imgLink = (BASE_URL + DOC_URL + contentDocLinks[0].ContentDocumentId);
         }
 
@@ -63,7 +65,9 @@ public inherited sharing class TripController {
         List<Trip__c> trips = TripManager.getByIds(new Set<Id>{tripId});
         List<Weather_Daily_Forecast__c> forecasts = new List<Weather_Daily_Forecast__c>();
 
-        if(!trips.isEmpty()) {
+        if(trips.isEmpty()) {
+            throw new AuraHandledException(Label.ServerError);
+        } else {
             Id spacePointId = trips[0].Space_Point__c;
             forecasts = WeatherDailyForecastManager.getBySpacePointId(spacePointId);
         }
