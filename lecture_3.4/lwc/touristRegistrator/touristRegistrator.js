@@ -28,7 +28,7 @@ export default class TouristRegistrator extends LightningElement {
 
     @api
     isValidSelection() {
-        let rowsNum = this.getTableData().selectedRows.length;
+        const rowsNum = this.getTableData().selectedRows.length;
         let isValid = false;
 
         if(!rowsNum) {
