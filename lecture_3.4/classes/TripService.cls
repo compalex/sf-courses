@@ -1,6 +1,6 @@
-public class TripService {
+public with sharing class TripService {
     
-    public static void insertFlights(List<Id> touristIds, Id tripId) {
+    public static Set<Id> insertFlights(List<Id> touristIds, Id tripId) {
         if(touristIds == null || touristIds.isEmpty() || String.isBlank(tripId)) {
             throw new AuraHandledException(Label.ServerError);
         }
@@ -17,9 +17,52 @@ public class TripService {
             );
         }
         insert flights;
+
+        return new Map<Id, Flight__c>(flights).keySet();
     }
 
-    public static void logError(Exception ex) {
-        System.debug(LoggingLevel.ERROR, ex.getLineNumber() + ': ' + ex.getMessage() + '\n' + ex.getStackTraceString());
+    public static List<TripWrapper> getNearestTrips(List<Trip__c> trips, Decimal latitude, Decimal longitude) {
+        if(latitude == null || longitude == null) {
+            return new List<TripWrapper>();
+        }
+
+        List<TripWrapper> tripWrappers = new List<TripWrapper>();
+
+        for(Trip__c trip : trips) {
+            tripWrappers.add(new TripWrapper(
+                trip,
+                NumberUtility.getDistanceBetweenGeolocations(latitude, longitude, trip.Latitude__c, trip.Longitude__c)
+            ));
+        }
+        tripWrappers.sort();
+
+        List<TripWrapper> tripsToReturn = new List<TripWrapper>();
+        Decimal max = Community_App__mdt.getInstance(Constants.CUSTOM_MDT_TYPES_MAIN_APP).Nearest_Spacepoints_Num__c;
+
+        for(Integer i = 0; i < max; i++) {
+            tripsToReturn.add(tripWrappers[i]);
+        }
+
+        return tripsToReturn;
+    }
+
+    public static List<ProductWrapper> getProductWrappers(List<Trip__c> trips) {
+        if(trips == null || trips.isEmpty()) {
+            return new List<ProductWrapper>();
+        }
+
+        Map<Id, Trip__c> tripByIds = new Map<Id, Trip__c>(trips);
+        List<PricebookEntry> pricebookEntries = PricebookEntryManager.getByTripIds(tripByIds.keySet());
+        List<ProductWrapper> productWrappers = new List<ProductWrapper>();
+
+        for(PricebookEntry pricebookEntry : pricebookEntries) {
+            productWrappers.add(
+                new ProductWrapper(
+                    tripByIds.get(pricebookEntry.TripId__c), 
+                    pricebookEntry
+                )
+            );
+        }
+        return productWrappers;
     }
 }

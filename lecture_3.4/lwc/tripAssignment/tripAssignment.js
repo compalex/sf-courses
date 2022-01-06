@@ -61,7 +61,7 @@ export default class TripAssignment extends LightningElement {
     handleConfirm() {
         this.isLoading = true;
         
-        this.touristRegistrator.handleSubmitted()
+        this.touristRegistrator.handleSubmit()
             .then(() => {       
                 getRecordNotifyChange([{recordId: this.recordId}]);
                 showToast(this, 'Success!', this.label.TouristsAssigned, 'success');

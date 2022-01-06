@@ -15,6 +15,7 @@ public class Constants {
     public static final String FLIGHT_STATUS_ACCEPTED = 'Accepted';
     public static final String FLIGHT_STATUS_OFFER_PENDING = 'Offer Pending';
     public static final String CUSTOM_MDT_TYPES_EMAIL_RECORD = 'Declined_Flights_Email';
+    public static final String CUSTOM_MDT_TYPES_MAIN_APP = 'Main_App';
     public static final String EMAIL_HTML_HEADER = 'Flights have been deleted for the following tourists:';
     public static final String EMAIL_SUBJECT = 'Flight have been deleted!';
     public static final String EMAIL_SENDER_NAME = 'SFDC courses inc.';
@@ -27,9 +28,11 @@ public class Constants {
     public static final String ERROR_MSG_500 = 'Internal Server Error!';
     public static final String RESPONSE_SUCCESS = 'OK';
     public static final String NO_TRIP_ID_ERROR = 'There is no trip id!';
+    public static final String LEAD_SOURCE_EMAIL = 'Email';
     public static final Integer DAYS_IN_YEAR = 365;
     public static final Integer STATUS_CODE_200 = 200;
     public static final Integer STATUS_CODE_404 = 404;
     public static final Integer STATUS_CODE_409 = 409;
     public static final Integer STATUS_CODE_500 = 500;
+    public static final Integer EARTH_RADIUS = 6371;
 }

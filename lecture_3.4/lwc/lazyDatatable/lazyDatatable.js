@@ -74,13 +74,13 @@ export default class LazyDatatable extends LightningElement {
         const target = event.target;
         target.isLoading = true;
         this.rowOffSet = this.rowOffSet + this.rowLimit;
-        await this.loadData();
+        this.loadData();
         target.isLoading = false;
     }
 
     @api
     getTableData() {
-        let tableTemplate = this.template.querySelector('lightning-datatable');
+        const tableTemplate = this.template.querySelector('lightning-datatable');
 
         return {
             data: tableTemplate.data,

@@ -6,7 +6,7 @@ public class TouristManager {
         }
 
         return [
-            SELECT Name, Age__c, Duplicate_Key__c
+            SELECT Name, Age__c, Duplicate_Key__c, Active__c
             FROM Tourist__c
             WHERE Id IN :ids
         ];
